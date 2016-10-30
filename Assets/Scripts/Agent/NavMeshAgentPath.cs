@@ -45,20 +45,34 @@ public class NavMeshAgentPath : MonoBehaviour {
     public void GoToFood()
     {
         foodAvailable = GameObject.FindGameObjectsWithTag("Food");
-
-
         float minDistance = Mathf.Infinity;
         Transform target = null;
 
+        bool isRightForest = false;
+
+        if (GameObject.FindGameObjectsWithTag("BridgeAvailable").Length > 0)
+        {
+            isRightForest = true;
+        }
+
         foreach (GameObject nearestFood in foodAvailable)
         {
-            float enemyDistance = Vector3.Distance(nearestFood.transform.position, transform.position);
+            float foodDistance = Vector3.Distance(nearestFood.transform.position, transform.position);
 
-            if (enemyDistance < minDistance)
+            if (nearestFood.transform.position.x > 0)
             {
-                target = nearestFood.transform;        
+                if (!isRightForest)
+                {
+                    break;
+                }
+            } 
+
+            if (foodDistance < minDistance)
+            {
+                target = nearestFood.transform;
             }
         }
+
         if (target)
         {
             Debug.DrawLine(transform.position, target.position, Color.green);
@@ -76,11 +90,11 @@ public class NavMeshAgentPath : MonoBehaviour {
 
         foreach (GameObject nearestRock in rocksAvailable)
         {
-            float enemyDistance = Vector3.Distance(nearestRock.transform.position, transform.position);
+            float roctDistance = Vector3.Distance(nearestRock.transform.position, transform.position);
 
-            if (enemyDistance < minDistance)
+            if (roctDistance < minDistance)
             { 
-                minDistance = enemyDistance;    
+                minDistance = roctDistance;    
                 target = nearestRock.transform;              
             }
         }

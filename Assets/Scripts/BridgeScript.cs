@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class BridgeScript : MonoBehaviour {
-
+    
 	// Use this for initialization
 	void Start () {
 	
@@ -24,6 +24,10 @@ public class BridgeScript : MonoBehaviour {
     IEnumerator Build()
     {
         yield return new WaitForSeconds(2);
-        Destroy(gameObject);
+       
+        foreach (MeshRenderer mesh in gameObject.GetComponentsInChildren<MeshRenderer>())
+        {
+            mesh.enabled = true;
+        }
     }
 }

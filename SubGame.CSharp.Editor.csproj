@@ -124,8 +124,8 @@
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\TiledAssetPostProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Assets\Scripts\Utilities\Priority_Queue\GITHUB PAGE.txt" />
-    <None Include="Assets\Assets\Scripts\Utilities\Priority_Queue\LICENSE.txt" />
+    <None Include="Assets\Scripts\Utilities\Priority_Queue\GITHUB PAGE.txt" />
+    <None Include="Assets\Scripts\Utilities\Priority_Queue\LICENSE.txt" />
     <None Include="Assets\Tiled2Unity\Imported\_ReadMe.txt" />
     <None Include="Assets\Tiled2Unity\Imported\bridge.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\untitled.tiled2unity.xml" />

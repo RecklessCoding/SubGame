@@ -53,17 +53,14 @@ public class BridgesManager : MonoBehaviour {
     private Vector3 GetRandomPos()
     {
         float minX = gameObject.transform.position.x - (gameObject.transform.localScale.x / 2);
-
         float minZ = gameObject.transform.position.z - (gameObject.transform.localScale.z / 2) + 0.75f;
         float maxZ = gameObject.transform.position.z + (gameObject.transform.localScale.z / 2) - 0.75f;
-
-        bool foundValidPos = false;
-
 
         Vector3 newVec = new Vector3(minX,
                                0,
                                Random.Range(minZ, maxZ));
 
+        bool foundValidPos = false;
         int maxRetries = 0;
 
         while (!foundValidPos && maxRetries < 10)

@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -74,21 +72,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Assets\Scripts\AgentResourcesManager.cs" />
-    <Compile Include="Assets\Assets\Scripts\BridgeScript.cs" />
-    <Compile Include="Assets\Assets\Scripts\BridgesManager.cs" />
-    <Compile Include="Assets\Assets\Scripts\FoodScript.cs" />
-    <Compile Include="Assets\Assets\Scripts\ForestFood.cs" />
-    <Compile Include="Assets\Assets\Scripts\KeyboardMovement.cs" />
-    <Compile Include="Assets\Assets\Scripts\NavMeshAgentPath.cs" />
-    <Compile Include="Assets\Assets\Scripts\RockScript.cs" />
-    <Compile Include="Assets\Assets\Scripts\Rocks.cs" />
-    <Compile Include="Assets\Assets\Scripts\SpriteScript.cs" />
-    <Compile Include="Assets\Assets\Scripts\Utilities\Priority_Queue\Priority Queue\FastPriorityQueue.cs" />
-    <Compile Include="Assets\Assets\Scripts\Utilities\Priority_Queue\Priority Queue\FastPriorityQueueNode.cs" />
-    <Compile Include="Assets\Assets\Scripts\Utilities\Priority_Queue\Priority Queue\IPriorityQueue.cs" />
-    <Compile Include="Assets\Assets\Scripts\Utilities\Priority_Queue\Priority Queue\SimplePriorityQueue.cs" />
-    <Compile Include="Assets\Assets\Scripts\Utilities\SimplePool.cs" />
+    <Compile Include="Assets\Scripts\Agent\Agent.cs" />
+    <Compile Include="Assets\Scripts\Agent\AgentResourcesManager.cs" />
+    <Compile Include="Assets\Scripts\Agent\NavMeshAgentPath.cs" />
+    <Compile Include="Assets\Scripts\BridgeScript.cs" />
+    <Compile Include="Assets\Scripts\BridgesManager.cs" />
+    <Compile Include="Assets\Scripts\FoodScript.cs" />
+    <Compile Include="Assets\Scripts\ForestFood.cs" />
+    <Compile Include="Assets\Scripts\HouseScript.cs" />
+    <Compile Include="Assets\Scripts\KeyboardMovement.cs" />
+    <Compile Include="Assets\Scripts\RockScript.cs" />
+    <Compile Include="Assets\Scripts\Rocks.cs" />
+    <Compile Include="Assets\Scripts\SpriteScript.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Priority_Queue\Priority Queue\FastPriorityQueue.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Priority_Queue\Priority Queue\FastPriorityQueueNode.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Priority_Queue\Priority Queue\IPriorityQueue.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Priority_Queue\Priority Queue\SimplePriorityQueue.cs" />
+    <Compile Include="Assets\Scripts\Utilities\SimplePool.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TileAnimator.cs" />
@@ -97,8 +97,8 @@
     <Compile Include="Assets\Tiled2Unity\Scripts\ViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Assets\Scripts\Utilities\Priority_Queue\GITHUB PAGE.txt" />
-    <None Include="Assets\Assets\Scripts\Utilities\Priority_Queue\LICENSE.txt" />
+    <None Include="Assets\Scripts\Utilities\Priority_Queue\GITHUB PAGE.txt" />
+    <None Include="Assets\Scripts\Utilities\Priority_Queue\LICENSE.txt" />
     <None Include="Assets\Tiled2Unity\Imported\_ReadMe.txt" />
     <None Include="Assets\Tiled2Unity\Imported\bridge.tiled2unity.xml" />
     <None Include="Assets\Tiled2Unity\Imported\untitled.tiled2unity.xml" />

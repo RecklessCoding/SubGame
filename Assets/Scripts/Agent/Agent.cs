@@ -1,28 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AgentResourcesManager : MonoBehaviour {
+public class Agent : MonoBehaviour {
 
-    public int food = 0; //TODO: Make it private
-    private int foodIncreaser = 1;
-    private int foodDecreaser = 1;
+    AgentResourcesManager agentResources;
 
-    public int stamina = 10; //TODO: Make it private
+    private int RESOURCE_DELAY = 2;
+
     private bool isAlive = true;
     private int nextStaminaUpdate = 1;
 
-    private int rocks = 0;
-    private int rocksIncreaser = 1;
-
     // Use this for initialization
-    void Start()
-    {
-
+    void Start () {
+        agentResources = new AgentResourcesManager();
     }
+	
+	// Update is called once per frame
+	void Update () {
 
-    // Update is called once per frame
-    void Update()
-    {
         if (Time.time >= nextStaminaUpdate)
         {
             nextStaminaUpdate = Mathf.FloorToInt(Time.time) + 1;             // Change the next update (current second+1)
@@ -33,6 +28,7 @@ public class AgentResourcesManager : MonoBehaviour {
         {
             KillItself();
         }
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -46,52 +42,46 @@ public class AgentResourcesManager : MonoBehaviour {
             GatherRock();
         }
     }
-    public int Food
+
+    private IEnumerator GatherFood()
     {
-        get
-        {
-            return food;
-        }
+        yield return new WaitForSeconds(RESOURCE_DELAY);
+
+        agentResources.IncreaseFood();
     }
 
-    public int Rocks
+    private IEnumerator GatherRock()
     {
-        get
-        {
-            return rocks;
-        }
-    }
+        yield return new WaitForSeconds(RESOURCE_DELAY);
 
-    private void GatherFood()
-    {
-        food = food + foodIncreaser;
-    }
-
-    private void GatherRock()
-    {
-        rocks = rocks + 1;
+        agentResources.IncreaseRocks();
     }
 
     public void Eat()
     {
-        food -= foodDecreaser;
-        stamina += 100;
+       // food -= foodDecreaser;
+        //stamina += 100;
     }
 
+    public void Build()
+    {
+        // food -= foodDecreaser;
+        //stamina += 100;
+    }
+
+    private void Tired()
+    {
+        agentResources.DecreaseStamina();
+
+        if (agentResources.Stamina == 0)
+        {
+            isAlive = false;
+        }
+    }
 
     public void KillItself()
     {
         Destroy(gameObject, 10f);
     }
 
-    private void Tired()
-    {
-        stamina--;
-
-        if (stamina == 0)
-        {
-            isAlive = false;
-        }
-    }
-  
 }

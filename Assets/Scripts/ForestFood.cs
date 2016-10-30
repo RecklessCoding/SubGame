@@ -6,49 +6,81 @@ public class ForestFood : MonoBehaviour
 
     public GameObject foodObjectTemplate;
 
-    private int restockTime = 1;
+    private int restockTime = 60;
 
     public const double MAX_FOOD = 10;
 
     private double currentFoodLevel = 0;
 
-    private GameObject[] foodAvailable;
+    private ArrayList foodAvailable;
 
     public double CurrentFoodLevel
     {
         get { return currentFoodLevel; }
     }
 
-    // Use this for initialization
     void Start()
     {
+        UpdateFoodList();
+        int i = foodAvailable.Count;
 
+        while (i < MAX_FOOD)
+        {
+            SpawnFood();
+            i++;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateFoodList();
         RefreshStock();
     }
 
     private void UpdateFoodList()
     {
-        foodAvailable = GameObject.FindGameObjectsWithTag("Food");
+        foodAvailable = new ArrayList();
+
+        foreach (GameObject food in GameObject.FindGameObjectsWithTag("Food"))
+        {
+            if (isAppleOnThisForest(food.transform.position)){
+                foodAvailable.Add(food);
+            }
+        }
     }
 
     private void RefreshStock()
     {
         if (Time.time >= restockTime)
         {
-            restockTime =  Mathf.FloorToInt(Time.time) + 1;
-            int i = foodAvailable.Length;
+            restockTime = Mathf.FloorToInt(Time.time) + 1;
+
+            UpdateFoodList();
+            int i = foodAvailable.Count;
+
             while (i < MAX_FOOD)
             {
                 SpawnFood();
                 i++;
             }
         }
+    }
+
+    private bool isAppleOnThisForest(Vector3 pos, float radius =  1f)
+    {
+        Collider[] colliders = Physics.OverlapSphere(pos, radius);
+
+        foreach (Collider collider in colliders)
+        {
+            GameObject go = collider.gameObject;
+
+            if (go.CompareTag(gameObject.tag))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void SpawnFood()
