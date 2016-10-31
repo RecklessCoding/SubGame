@@ -23,7 +23,6 @@ public class NavMeshAgentPath : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
         if (agent.velocity.x == 0 && agent.velocity.z == 0)
         {
             anim.SetBool("isWalking", false);
@@ -34,7 +33,6 @@ public class NavMeshAgentPath : MonoBehaviour {
             anim.SetFloat("input_x", agent.velocity.x);
             anim.SetFloat("input_y", agent.velocity.z);
         }
-        GoToFood();
 	}
 
     void OnTriggerEnter(Collider other)
@@ -48,11 +46,11 @@ public class NavMeshAgentPath : MonoBehaviour {
         float minDistance = Mathf.Infinity;
         Transform target = null;
 
-        bool isRightForest = false;
+        bool isRightForestAvailable = false;
 
         if (GameObject.FindGameObjectsWithTag("BridgeAvailable").Length > 0)
         {
-            isRightForest = true;
+            isRightForestAvailable = true;
         }
 
         foreach (GameObject nearestFood in foodAvailable)
@@ -61,9 +59,9 @@ public class NavMeshAgentPath : MonoBehaviour {
 
             if (nearestFood.transform.position.x > 0)
             {
-                if (!isRightForest)
+                if (!isRightForestAvailable)
                 {
-                    break;
+                    foodDistance = 99999999f;
                 }
             } 
 

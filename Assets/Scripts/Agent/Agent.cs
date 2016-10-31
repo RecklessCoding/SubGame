@@ -5,14 +5,17 @@ public class Agent : MonoBehaviour {
 
     AgentResourcesManager agentResources;
 
-    private int RESOURCE_DELAY = 2;
+    NavMeshAgentPath agentPathfinding;
+
+    private int RESOURCE_DELAY = 1;
 
     private bool isAlive = true;
-    private int nextStaminaUpdate = 1;
+    private int nextStaminaUpdate = 5;
 
     // Use this for initialization
     void Start () {
         agentResources = new AgentResourcesManager();
+        agentPathfinding = gameObject.GetComponent("NavMeshAgentPath") as NavMeshAgentPath;
     }
 	
 	// Update is called once per frame
@@ -20,7 +23,7 @@ public class Agent : MonoBehaviour {
 
         if (Time.time >= nextStaminaUpdate)
         {
-            nextStaminaUpdate = Mathf.FloorToInt(Time.time) + 1;             // Change the next update (current second+1)
+            nextStaminaUpdate = Mathf.FloorToInt(Time.time) + 10;             // Change the next update (current second+1)
             Tired();
         }
 
@@ -35,22 +38,24 @@ public class Agent : MonoBehaviour {
     {
         if (other.gameObject.tag == "Food")
         {
-            GatherFood();
+            StartCoroutine(GatherFood());
         }
         else if (other.gameObject.tag == "Rock")
         {
-            GatherRock();
+            StartCoroutine(GatherRock());
         }
     }
 
-    private IEnumerator GatherFood()
+    IEnumerator GatherFood()
     {
         yield return new WaitForSeconds(RESOURCE_DELAY);
+
+        Debug.Log("Collide!");
 
         agentResources.IncreaseFood();
     }
 
-    private IEnumerator GatherRock()
+    IEnumerator GatherRock()
     {
         yield return new WaitForSeconds(RESOURCE_DELAY);
 
@@ -72,6 +77,12 @@ public class Agent : MonoBehaviour {
     private void Tired()
     {
         agentResources.DecreaseStamina();
+        Debug.Log(agentResources.Food);
+
+        if (agentResources.Stamina < 100 && agentResources.Food < 5)
+        {
+            agentPathfinding.GoToFood();
+        }
 
         if (agentResources.Stamina == 0)
         {

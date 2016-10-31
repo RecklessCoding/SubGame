@@ -3,7 +3,7 @@ using System.Collections;
 
 public class AgentResourcesManager {
 
-    public int food = 0;
+    private int food = 0;
     private int foodIncreaser = 1;
     private int foodDecreaser = 1;
 
@@ -43,7 +43,8 @@ public class AgentResourcesManager {
 
     public void IncreaseFood()
     {
-        food =+ foodIncreaser;
+        Debug.Log(food);
+        food = food + foodIncreaser;
     }
 
     public void DecreaseFood()
@@ -55,7 +56,4 @@ public class AgentResourcesManager {
     {
         rocks = +rocksIncreaser;
     }
-
-  
-  
 }
