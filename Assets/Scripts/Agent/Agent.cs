@@ -1,98 +1,145 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Agent : MonoBehaviour {
-
-    AgentResourcesManager agentResources;
+public class Agent : MonoBehaviour
+{
+    AgentResourcesManager agentResources = new AgentResourcesManager();
 
     NavMeshAgentPath agentPathfinding;
 
-    private int RESOURCE_DELAY = 1;
+    AgentActionsHandler agentActionsHandler;
 
     private bool isAlive = true;
-    private int nextStaminaUpdate = 5;
+    private int nextStaminaUpdate = 20;
+    private const int STAMINA_UPDATE_TIME = 20;
 
-    // Use this for initialization
-    void Start () {
-        agentResources = new AgentResourcesManager();
+    void Start()
+    {
         agentPathfinding = gameObject.GetComponent("NavMeshAgentPath") as NavMeshAgentPath;
+        agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
     }
-	
-	// Update is called once per frame
-	void Update () {
 
-        if (Time.time >= nextStaminaUpdate)
-        {
-            nextStaminaUpdate = Mathf.FloorToInt(Time.time) + 10;             // Change the next update (current second+1)
-            Tired();
-        }
+    void Update()
+    {
+        CheckIfAlive();
+        UpdateStamina();
 
-        if (!isAlive)
-        {
-            KillItself();
-        }
-
+        if (agentActionsHandler != null)
+            agentActionsHandler.PerformActionSelection();
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Food")
+        if (other.gameObject != null)
         {
-            StartCoroutine(GatherFood());
-        }
-        else if (other.gameObject.tag == "Rock")
-        {
-            StartCoroutine(GatherRock());
+            if (other.gameObject.tag.Equals("Food") && agentActionsHandler.IsGatheringFood)
+            {
+                GatherFood();
+            }
+            else if (other.gameObject.tag.Equals("Rock") && agentActionsHandler.IsGatheringRock)
+            {
+                GatherRock();
+            }
+            else if (other.gameObject.tag.Equals("BridgeNotAvailable") && agentActionsHandler.IsBuildingBridges)
+            {
+                Build();
+            }
+            else if (other.gameObject.Equals(agentResources.Home) && agentActionsHandler.IsGoingHome)
+            {
+                GotHome();
+            }
         }
     }
 
-    IEnumerator GatherFood()
+
+    public bool CanBuildBridge()
     {
-        yield return new WaitForSeconds(RESOURCE_DELAY);
+        return agentResources.HasRocks() && agentActionsHandler.IsBuildingBridges;
+    }
 
-        Debug.Log("Collide!");
+    public bool CanBuildHouse()
+    {
+        return agentResources.HasRocks() && agentActionsHandler.IsGoingHome;
+    }
 
+    public void StarNewWork(int workIndex)
+    {
+        agentActionsHandler.StarNewWork(workIndex);
+    }
+
+    private void CheckIfAlive()
+    {
+        if (!isAlive)
+        {
+            KillItself();
+        }
+    }
+
+    private void GatherFood()
+    {
         agentResources.IncreaseFood();
+        GatherResource();
+        agentActionsHandler.Eat();
     }
 
-    IEnumerator GatherRock()
+    private void GatherResource()
     {
-        yield return new WaitForSeconds(RESOURCE_DELAY);
+        agentPathfinding.StopWalking();
+        agentActionsHandler.GatherResource();
+    }
 
+    private void GatherRock()
+    {
+        GatherResource();
         agentResources.IncreaseRocks();
     }
 
-    public void Eat()
+    private void GotHome()
     {
-       // food -= foodDecreaser;
-        //stamina += 100;
+        agentPathfinding.StopWalking();
+
+        if (agentResources.HasHomeNotBuilt())
+        {
+            Build();
+        }
+       
+        agentActionsHandler.IsGoingHome = false;
+    }
+
+    public void KillItself()
+    {
+        if (agentResources.HasHome())
+        {
+            HouseScript home = agentResources.Home.GetComponent("HouseScript") as HouseScript;
+            home.RemoveAgent();
+        }
+
+        Destroy(gameObject, 1f);
+    }
+
+    private void UpdateStamina()
+    {
+        if (Time.time >= nextStaminaUpdate)
+        {
+            nextStaminaUpdate = Mathf.FloorToInt(Time.time) + STAMINA_UPDATE_TIME;             // Change the next update (current second+1)
+            Tired();
+        }
     }
 
     public void Build()
     {
-        // food -= foodDecreaser;
-        //stamina += 100;
+        agentPathfinding.StopWalking();
+s
+        agentActionsHandler.Build();
     }
 
     private void Tired()
     {
         agentResources.DecreaseStamina();
-        Debug.Log(agentResources.Food);
-
-        if (agentResources.Stamina < 100 && agentResources.Food < 5)
-        {
-            agentPathfinding.GoToFood();
-        }
-
         if (agentResources.Stamina == 0)
         {
             isAlive = false;
+            KillItself();
         }
     }
-
-    public void KillItself()
-    {
-        Destroy(gameObject, 10f);
-    }
-
 }

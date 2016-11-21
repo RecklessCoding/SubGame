@@ -1,105 +1,133 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
-public class NavMeshAgentPath : MonoBehaviour {
+public class NavMeshAgentPath : MonoBehaviour
+{
+    NavMeshAgent agentNavMesh;
 
-    public GameObject[] foodAvailable;
+    private Animator anim;
 
-    public GameObject[] rocksAvailable;
-
-    NavMeshAgent agent;
-    Animator anim;
+    private float AGENT_SPEED;
 
     // Use this for initialization
-    void Start () {
-        agent = GetComponent<NavMeshAgent>();
+    void Start()
+    {
         anim = GetComponent<Animator>();
-
         transform.GetComponent<NavMeshAgent>().updateRotation = false;
+        agentNavMesh = GetComponent<NavMeshAgent>();
 
-        foodAvailable = GameObject.FindGameObjectsWithTag("Food");
-        rocksAvailable = GameObject.FindGameObjectsWithTag("Rock");
+        AGENT_SPEED = agentNavMesh.speed;
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (agent.velocity.x == 0 && agent.velocity.z == 0)
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (agentNavMesh.velocity.x == 0 && agentNavMesh.velocity.z == 0)
         {
             anim.SetBool("isWalking", false);
         }
         else
         {
             anim.SetBool("isWalking", true);
-            anim.SetFloat("input_x", agent.velocity.x);
-            anim.SetFloat("input_y", agent.velocity.z);
+            anim.SetFloat("input_x", agentNavMesh.velocity.x);
+            anim.SetFloat("input_y", agentNavMesh.velocity.z);
         }
-	}
+    }
 
     void OnTriggerEnter(Collider other)
     {
         anim.SetBool("isWalking", false);
     }
 
-    public void GoToFood()
+    public void StopWalking()
     {
-        foodAvailable = GameObject.FindGameObjectsWithTag("Food");
-        float minDistance = Mathf.Infinity;
-        Transform target = null;
+        anim.SetBool("isWalking", false);
+        agentNavMesh.speed = 0;
+    }
 
-        bool isRightForestAvailable = false;
+    public Transform GoToFood()
+    {
+        agentNavMesh.speed = 5;
 
+        bool isBottomForestAvailable = false;
         if (GameObject.FindGameObjectsWithTag("BridgeAvailable").Length > 0)
         {
-            isRightForestAvailable = true;
+            isBottomForestAvailable = true;
         }
 
-        foreach (GameObject nearestFood in foodAvailable)
+        GameObject[] foodAvailable = GameObject.FindGameObjectsWithTag("Food");
+        Transform target = null;
+        target = FindNearestObject(foodAvailable);
+
+        if (target != null)
         {
-            float foodDistance = Vector3.Distance(nearestFood.transform.position, transform.position);
-
-            if (nearestFood.transform.position.x > 0)
+            if (target.transform.position.z < 0 && !isBottomForestAvailable)
             {
-                if (!isRightForestAvailable)
-                {
-                    foodDistance = 99999999f;
-                }
-            } 
-
-            if (foodDistance < minDistance)
-            {
-                target = nearestFood.transform;
+                return null;
             }
         }
 
-        if (target)
+        GoToTarget(target);
+
+        return target;
+    }
+
+    public Transform GoToUnfinishedBridge()
+    {
+        GameObject[] bridges = GameObject.FindGameObjectsWithTag("BridgeNotAvailable");
+
+        return GoToTarget((FindNearestObject(bridges)));
+    }
+
+    public void GoHome(GameObject home)
+    {
+        if (home.transform)
         {
-            Debug.DrawLine(transform.position, target.position, Color.green);
-            agent.SetDestination(target.position);
-        }
+            Vector3 location = new Vector3(home.transform.position.x + 0.7f, 
+                home.transform.position.y, home.transform.position.z - 0.7f);
+  
+            agentNavMesh.speed = AGENT_SPEED;
+            Debug.DrawLine(transform.position, location, Color.green);
+            agentNavMesh.SetDestination(location);
+        }  
     }
 
     public void GoToRocks()
     {
-    rocksAvailable = GameObject.FindGameObjectsWithTag("Food");
+        GoToTarget((FindNearestObject(GameObject.FindGameObjectsWithTag("Rock"))));
+    }
 
-
+    internal Transform FindNearestObject(GameObject[] targetObjects)
+    {
         float minDistance = Mathf.Infinity; // initiate distance at max value possible
         Transform target = null; // use this to detect the no enemy case
 
-        foreach (GameObject nearestRock in rocksAvailable)
+        foreach (GameObject nearestObject in targetObjects)
         {
-            float roctDistance = Vector3.Distance(nearestRock.transform.position, transform.position);
+            float targetDistance = Vector2.Distance(new Vector2(nearestObject.transform.position.x,
+                nearestObject.transform.position.z),
+                new Vector2(transform.position.x, transform.position.z));
 
-            if (roctDistance < minDistance)
-            { 
-                minDistance = roctDistance;    
-                target = nearestRock.transform;              
+            if (targetDistance < minDistance)
+            {
+                minDistance = targetDistance;
+                target = nearestObject.transform;
             }
         }
+
+        return target;
+    }
+
+    private Transform GoToTarget(Transform target)
+    {
         if (target)
         {
+            agentNavMesh.speed = AGENT_SPEED;
             Debug.DrawLine(transform.position, target.position, Color.green);
-            agent.SetDestination(target.position);
+            agentNavMesh.SetDestination(target.position);
         }
+
+        return target;
     }
 }

@@ -25,12 +25,7 @@ public class BridgesManager : MonoBehaviour {
         yield return new WaitForSeconds(2);
 
         Vector3 pos = GetRandomPos();
-
-        GameObject bridge = Instantiate(bridgeTemplate, pos, Quaternion.Euler(90, 0, 0)) as GameObject;
-        foreach (MeshRenderer mesh in bridge.GetComponentsInChildren<MeshRenderer>())
-        {
-            mesh.enabled = false;
-        }
+        Instantiate(bridgeTemplate, pos, Quaternion.Euler(90, 0, 0));
     }
 
     private bool isPosOK(Vector3 pos, float radius = 0.25f)

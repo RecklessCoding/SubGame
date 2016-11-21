@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class AgentResourcesManager {
-
+public class AgentResourcesManager
+{
     private int food = 0;
-    private int foodIncreaser = 1;
-    private int foodDecreaser = 1;
 
     private int stamina = 10;
 
     private int rocks = 0;
-    private int rocksIncreaser = 1;
 
-    public int Food
+    private GameObject home = null;
+
+    internal int Food
     {
         get
         {
@@ -20,7 +20,7 @@ public class AgentResourcesManager {
         }
     }
 
-    public int Rocks
+    internal int Rocks
     {
         get
         {
@@ -28,7 +28,7 @@ public class AgentResourcesManager {
         }
     }
 
-    public int Stamina
+    internal int Stamina
     {
         get
         {
@@ -36,24 +36,88 @@ public class AgentResourcesManager {
         }
     }
 
-    public void DecreaseStamina()
+    internal GameObject Home
+    {
+        get
+        {
+            return home;
+        }
+    }
+
+    internal void SetHome(GameObject house)
+    {
+        if (home == null)
+        {
+            home = house;
+        }
+    }
+
+    internal void IncreaseStamina()
+    {
+        stamina++;
+    }
+
+    internal void DecreaseStamina()
     {
         stamina--;
     }
 
-    public void IncreaseFood()
+    internal void IncreaseFood()
     {
-        Debug.Log(food);
-        food = food + foodIncreaser;
+        food = 1;
     }
 
-    public void DecreaseFood()
+    internal void DecreaseFood()
     {
-        food =- foodDecreaser;
+        food = 0;
     }
 
-    public void IncreaseRocks()
+    internal void IncreaseRocks()
     {
-        rocks = +rocksIncreaser;
+        rocks = 1;
+    }
+
+    internal void DecreaseRocks()
+    {
+        rocks = 0;
+    }
+
+    internal bool HasRocks()
+    {
+        return (rocks > 0);
+    }
+
+    internal bool HasHome()
+    {
+        return (home != null);
+    }
+
+    internal bool HasHomeBuilt()
+    {
+        if (HasHome())
+        {
+            return home.CompareTag("HouseBuiltAvailable") || home.CompareTag("HouseBuiltFull");
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    internal bool HasHomeNotBuilt()
+    {
+        if (HasHome())
+        {
+            return home.CompareTag("HouseNotBuiltAvailable") || home.CompareTag("HouseNotBuiltFull");
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    internal bool HasFood()
+    {
+        return (food > 0);
     }
 }

@@ -7,19 +7,17 @@ public class Rocks : MonoBehaviour {
 
     private int restockTime = 1;
 
-    public const double MAX_ROCKS = 10;
-
-    private double currentFoodLevel = 0;
+    public const double MAX_ROCKS = 100;
 
     private GameObject[] rocksAvailable;
 
     // Use this for initialization
     void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        RefreshStock();
+    }
+
+    // Update is called once per frame
+    void Update () {
         UpdateRocksList();
         RefreshStock();
     }
@@ -48,8 +46,8 @@ public class Rocks : MonoBehaviour {
     private void SpawnRocks()
     {
         Vector3 pos = GetRandomPos();
-
         GameObject rock = Instantiate(rockTemplate, pos, Quaternion.Euler(90, 0, 0)) as GameObject;
+        rock.transform.SetParent(gameObject.transform.parent.GetChild(2).transform);
     }
 
 
