@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Rocks : MonoBehaviour {
+public class Rocks : MonoBehaviour
+{
 
     public GameObject rockTemplate;
 
@@ -12,14 +13,16 @@ public class Rocks : MonoBehaviour {
     private GameObject[] rocksAvailable;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         RefreshStock();
     }
 
     // Update is called once per frame
-    void Update () {
-        UpdateRocksList();
-        RefreshStock();
+    void Update()
+    {
+        //    UpdateRocksList();
+        //  RefreshStock();
     }
 
 
@@ -30,16 +33,11 @@ public class Rocks : MonoBehaviour {
 
     private void RefreshStock()
     {
-        if (Time.time >= restockTime)
+        int i = 0;
+        while (i < MAX_ROCKS)
         {
-            restockTime = Mathf.FloorToInt(Time.time) + 1;
-
-            int i = rocksAvailable.Length;
-            while (i < MAX_ROCKS)
-            {
-                SpawnRocks();
-                i++;
-            }
+            SpawnRocks();
+            i++;
         }
     }
 
@@ -47,7 +45,7 @@ public class Rocks : MonoBehaviour {
     {
         Vector3 pos = GetRandomPos();
         GameObject rock = Instantiate(rockTemplate, pos, Quaternion.Euler(90, 0, 0)) as GameObject;
-        rock.transform.SetParent(gameObject.transform.parent.GetChild(2).transform);
+        rock.transform.SetParent(gameObject.transform);
     }
 
 
@@ -82,9 +80,9 @@ public class Rocks : MonoBehaviour {
                                0,
                                Random.Range(minZ, maxZ));
 
-        int maxRetries = 0; 
+        int maxRetries = 0;
 
-        while (!foundValidPos && maxRetries<10)
+        while (!foundValidPos && maxRetries < 10)
         {
             foundValidPos = isPosOK(newVec);
             if (foundValidPos)

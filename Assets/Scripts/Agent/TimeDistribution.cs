@@ -5,6 +5,14 @@ using System;
 
 public class TimeDistribution : MonoBehaviour
 {
+    public GameObject foodSlider;
+
+    public GameObject bridgesSlider;
+
+    public GameObject houseSlider;
+
+    private float remainer; 
+
     private float foodTime = 60;
 
     private float bridgesTime = 60;
@@ -12,6 +20,8 @@ public class TimeDistribution : MonoBehaviour
     private float housesTime = 60;
 
     private float restHouseTime = 60;
+
+    private float MAX_VALUE = 180;
 
     public float FoodTime
     {
@@ -55,6 +65,11 @@ public class TimeDistribution : MonoBehaviour
     {
         float change = foodTime - newValue;
 
+        if ((bridgesTime == 0 || housesTime == 0) && (change < 0))
+        {
+            change = change * 2;
+        }
+
         foodTime = newValue;
         bridgesTime = UpdateTimeAllocation(bridgesTime, change);
         housesTime = UpdateTimeAllocation(housesTime, change);
@@ -66,6 +81,11 @@ public class TimeDistribution : MonoBehaviour
     {
         float change = bridgesTime - newValue;
 
+        if ((foodTime == 0 || housesTime == 0) && (change < 0))
+        {
+            change = change * 2;
+        }
+
         foodTime = UpdateTimeAllocation(foodTime, change);
         bridgesTime = newValue;
         housesTime = UpdateTimeAllocation(housesTime, change);
@@ -76,6 +96,11 @@ public class TimeDistribution : MonoBehaviour
     public void OnHousesSliderChange(float newValue)
     {
         float change = housesTime - newValue;
+
+        if ((foodTime == 0 || bridgesTime == 0) && (change < 0))
+        {
+            change = change * 2;
+        }
 
         foodTime = UpdateTimeAllocation(foodTime, change);
         bridgesTime = UpdateTimeAllocation(bridgesTime, change);
@@ -103,6 +128,13 @@ public class TimeDistribution : MonoBehaviour
         if (timeTobeUpdated < 0)
         {
             timeTobeUpdated = 0;
+            remainer = 0 - timeTobeUpdated;
+        }
+
+        if (timeTobeUpdated > MAX_VALUE)
+        {
+            timeTobeUpdated = MAX_VALUE;
+            remainer = 0 + change;
         }
 
         return timeTobeUpdated;
@@ -110,8 +142,8 @@ public class TimeDistribution : MonoBehaviour
 
     private void UpdateSliders()
     {
-        GameObject.Find("SliderFood").GetComponent<Slider>().value = foodTime;
-        GameObject.Find("SliderBridges").GetComponent<Slider>().value = bridgesTime;
-        GameObject.Find("SliderHouses").GetComponent<Slider>().value = housesTime;
+        foodSlider.GetComponent<Slider>().value = foodTime;
+        bridgesSlider.GetComponent<Slider>().value = bridgesTime;
+        houseSlider.GetComponent<Slider>().value = housesTime;
     }
 }

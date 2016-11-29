@@ -15,10 +15,7 @@ public class BridgeScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(false);
-        }
+        Destroy();
 
         rocksNeeded = 24;
     }
@@ -33,6 +30,7 @@ public class BridgeScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Agent")
         {
+
             Build(other.gameObject);
         }
     }
@@ -41,7 +39,20 @@ public class BridgeScript : MonoBehaviour
     {
         gameObject.tag = "BridgeNotAvailable";
 
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+
+        stage = 0;
+
         EnableNavMeshObstacle();
+    }
+
+    private IEnumerator BuildWithWait(GameObject go)
+    {
+        yield return new WaitForSeconds(2);
+        Build(go);
     }
 
     private void Build(GameObject agentGO)

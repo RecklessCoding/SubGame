@@ -60,6 +60,11 @@ public class HouseScript : MonoBehaviour
         UpdateHouseStatus();
     }
 
+    public bool CanReproduce()
+    {
+        return (agentsAllocatedToHouse > 2);
+    }
+
     private void UpdateHouseStatus()
     {
         if (agentsAllocatedToHouse == MAX_AGENTS && gameObject.CompareTag("HouseBuiltFull"))

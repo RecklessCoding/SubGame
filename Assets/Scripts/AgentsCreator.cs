@@ -1,28 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
-public class AgentsCreator : MonoBehaviour {
+public class AgentsCreator : MonoBehaviour
+{
 
     public GameObject agent;
 
-	// Use this for initialization
-	void Start () {
+    public GameObject populationCounter;
+
+    public int agentsCount;
+
+    private Text populationCounterTextbox;
+
+    // Use this for initialization
+    void Start()
+    {
 
         Transform posBoundaries = GameObject.Find("HousesManager").transform;
         Vector3 pos;
+
+        populationCounterTextbox = populationCounter.GetComponent<Text>();
 
         for (int i = 0; i < 200; i++)
         {
             pos = GetRandomPos(posBoundaries);
 
-            Instantiate(agent, pos, Quaternion.Euler(90, 0, 0));
+            SpawnAgent(pos);
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    }
+
+    void Update()
+    {
+        agentsCount = gameObject.transform.childCount;
+        populationCounterTextbox.text = agentsCount.ToString();
+    }
+
+    public void SpawnAgent(Vector3 pos)
+    {
+        GameObject newAgent = Instantiate(agent, pos, Quaternion.Euler(90, 0, 0)) as GameObject;
+        newAgent.transform.SetParent(gameObject.transform);
+    }
 
     private Vector3 GetRandomPos(Transform posBoundaries)
     {
@@ -34,7 +52,7 @@ public class AgentsCreator : MonoBehaviour {
 
         Vector3 newVec = new Vector3(Random.Range(minX, maxX),
                                      0,
-                                     Random.Range(minZ, maxZ));       
+                                     Random.Range(minZ, maxZ));
 
         return newVec;
     }

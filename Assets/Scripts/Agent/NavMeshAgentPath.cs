@@ -35,11 +35,6 @@ public class NavMeshAgentPath : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        anim.SetBool("isWalking", false);
-    }
-
     public void StopWalking()
     {
         anim.SetBool("isWalking", false);

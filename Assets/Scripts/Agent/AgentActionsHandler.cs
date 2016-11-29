@@ -185,12 +185,13 @@ public class AgentActionsHandler
 
     internal void Build()
     {
-        nextAvailability = Mathf.FloorToInt(Time.time) + BUILD_DELAY;
-
+        isBusy = true;
         agentPathfinding.StopWalking();
         agentResources.DecreaseRocks();
         isBuildingBridges = false;
         isBuildingHouses = false;
+
+        nextAvailability = Mathf.FloorToInt(Time.time) + BUILD_DELAY;
     }
 
     private void GoBuildHome()

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Agent : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class Agent : MonoBehaviour
     private bool isAlive = true;
     private int nextStaminaUpdate = 20;
     private const int STAMINA_UPDATE_TIME = 20;
+
+    private const int PROCREATE_CHANGE = 10;
 
     void Start()
     {
@@ -101,9 +104,27 @@ public class Agent : MonoBehaviour
         if (agentResources.HasHomeNotBuilt())
         {
             Build();
+        } else
+        {
+            Reproduce();
         }
        
         agentActionsHandler.IsGoingHome = false;
+    }
+
+    private void Reproduce()
+    {
+        HouseScript home = agentResources.Home.GetComponent("HouseScript") as HouseScript;
+        if (home.CanReproduce())
+        {
+            int dieRool = UnityEngine.Random.Range(1, 100);
+
+            if (dieRool < PROCREATE_CHANGE)
+            {
+                AgentsCreator agentsCreator = transform.parent.gameObject.GetComponent("AgentsCreator") as AgentsCreator;
+                agentsCreator.SpawnAgent(transform.position);
+            }
+        }
     }
 
     public void KillItself()
@@ -129,7 +150,6 @@ public class Agent : MonoBehaviour
     public void Build()
     {
         agentPathfinding.StopWalking();
-s
         agentActionsHandler.Build();
     }
 
