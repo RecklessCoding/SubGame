@@ -6,7 +6,7 @@ public class Floods : MonoBehaviour
 {
     private int nextFlood = 60;
 
-    private const int FLOOD_TIMER = 120;
+    private const int FLOOD_TIMER = 360;
 
     private int timesInvoked;
 
