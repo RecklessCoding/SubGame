@@ -8,29 +8,13 @@ public class Rocks : MonoBehaviour
 
     private int restockTime = 1;
 
-    public const double MAX_ROCKS = 100;
-
-    private GameObject[] rocksAvailable;
+    public const double MAX_ROCKS = 50;
 
     // Use this for initialization
     void Start()
     {
         RefreshStock();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //    UpdateRocksList();
-        //  RefreshStock();
-    }
-
-
-    private void UpdateRocksList()
-    {
-        rocksAvailable = GameObject.FindGameObjectsWithTag("Rock");
-    }
-
     private void RefreshStock()
     {
         int i = 0;

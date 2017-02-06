@@ -11,10 +11,11 @@ public class Agent : MonoBehaviour
     AgentActionsHandler agentActionsHandler;
 
     private bool isAlive = true;
+
     private int nextStaminaUpdate = 20;
     private const int STAMINA_UPDATE_TIME = 20;
 
-    private const int PROCREATE_CHANGE = 10;
+    private const int PROCREATE_CHANCE = 10;
 
     void Start()
     {
@@ -28,7 +29,9 @@ public class Agent : MonoBehaviour
         UpdateStamina();
 
         if (agentActionsHandler != null)
+        {
             agentActionsHandler.PerformActionSelection();
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -117,9 +120,9 @@ public class Agent : MonoBehaviour
         HouseScript home = agentResources.Home.GetComponent("HouseScript") as HouseScript;
         if (home.CanReproduce())
         {
-            int dieRool = UnityEngine.Random.Range(1, 100);
+            int dieRoll = UnityEngine.Random.Range(1, 100);
 
-            if (dieRool < PROCREATE_CHANGE)
+            if (dieRoll < PROCREATE_CHANCE)
             {
                 AgentsCreator agentsCreator = transform.parent.gameObject.GetComponent("AgentsCreator") as AgentsCreator;
                 agentsCreator.SpawnAgent(transform.position);

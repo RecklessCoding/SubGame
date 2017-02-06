@@ -12,8 +12,8 @@ public class SpriteScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        transform.GetComponent<NavMeshAgent>().updateRotation = false;
-        target.GetComponentInParent<NavMeshAgent>().updateRotation = false;
+        transform.GetComponent<UnityEngine.AI.NavMeshAgent>().updateRotation = false;
+        target.GetComponentInParent<UnityEngine.AI.NavMeshAgent>().updateRotation = false;
     }
 
     // Update is called once per frame

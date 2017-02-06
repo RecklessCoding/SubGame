@@ -73,7 +73,7 @@ public class BridgeScript : MonoBehaviour
         if (stage == (rocksNeeded-1))
         {
             gameObject.tag = "BridgeAvailable";
-            NavMeshObstacle navOb = gameObject.GetComponent(typeof(NavMeshObstacle)) as NavMeshObstacle;
+            UnityEngine.AI.NavMeshObstacle navOb = gameObject.GetComponent(typeof(UnityEngine.AI.NavMeshObstacle)) as UnityEngine.AI.NavMeshObstacle;
             if (navOb != null)
             {
                 navOb.enabled = false;
@@ -97,7 +97,7 @@ public class BridgeScript : MonoBehaviour
 
     private void EnableNavMeshObstacle()
     {
-        NavMeshObstacle navOb = gameObject.GetComponent(typeof(NavMeshObstacle)) as NavMeshObstacle;
+        UnityEngine.AI.NavMeshObstacle navOb = gameObject.GetComponent(typeof(UnityEngine.AI.NavMeshObstacle)) as UnityEngine.AI.NavMeshObstacle;
         if (navOb != null)
         {
             navOb.enabled = true;

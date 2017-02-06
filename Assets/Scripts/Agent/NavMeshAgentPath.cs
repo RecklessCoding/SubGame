@@ -4,7 +4,7 @@ using System;
 
 public class NavMeshAgentPath : MonoBehaviour
 {
-    NavMeshAgent agentNavMesh;
+    UnityEngine.AI.NavMeshAgent agentNavMesh;
 
     private Animator anim;
 
@@ -14,8 +14,8 @@ public class NavMeshAgentPath : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
-        transform.GetComponent<NavMeshAgent>().updateRotation = false;
-        agentNavMesh = GetComponent<NavMeshAgent>();
+        transform.GetComponent<UnityEngine.AI.NavMeshAgent>().updateRotation = false;
+        agentNavMesh = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         AGENT_SPEED = agentNavMesh.speed;
     }
