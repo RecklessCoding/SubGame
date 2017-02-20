@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
 public class FloodingManager : MonoBehaviour
 {
@@ -14,7 +12,6 @@ public class FloodingManager : MonoBehaviour
 
     private FloodingAnimation animation;
 
-    // Use this for initialization
     void Start()
     {
         animation = river.GetComponent("FloodingAnimation") as FloodingAnimation;

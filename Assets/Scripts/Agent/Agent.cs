@@ -12,13 +12,16 @@ public class Agent : MonoBehaviour
 
     private bool isAlive = true;
 
-    private int nextStaminaUpdate = 20;
-    private const int STAMINA_UPDATE_TIME = 20;
+    private int nextStaminaUpdate;
 
-    private const int PROCREATE_CHANCE = 10;
+    private const int STAMINA_UPDATE_TIME = 10;
+
+    private const int PROCREATE_CHANCE = 50;
 
     void Start()
     {
+        nextStaminaUpdate = STAMINA_UPDATE_TIME;
+
         agentPathfinding = gameObject.GetComponent("NavMeshAgentPath") as NavMeshAgentPath;
         agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
     }
@@ -36,7 +39,7 @@ public class Agent : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != null)
+        if (other.gameObject != null  && gameObject != null)
         {
             if (other.gameObject.tag.Equals("Food") && agentActionsHandler.IsGatheringFood)
             {
@@ -56,7 +59,6 @@ public class Agent : MonoBehaviour
             }
         }
     }
-
 
     public bool CanBuildBridge()
     {
@@ -107,11 +109,12 @@ public class Agent : MonoBehaviour
         if (agentResources.HasHomeNotBuilt())
         {
             Build();
-        } else
+        }
+        else
         {
             Reproduce();
         }
-       
+
         agentActionsHandler.IsGoingHome = false;
     }
 
@@ -125,7 +128,7 @@ public class Agent : MonoBehaviour
             if (dieRoll < PROCREATE_CHANCE)
             {
                 AgentsCreator agentsCreator = transform.parent.gameObject.GetComponent("AgentsCreator") as AgentsCreator;
-                agentsCreator.SpawnAgent(transform.position);
+                agentsCreator.BornAgent(transform.position);
             }
         }
     }

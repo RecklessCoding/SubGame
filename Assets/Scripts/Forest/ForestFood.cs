@@ -7,13 +7,13 @@ public class ForestFood : MonoBehaviour
 
     private int restockTime = 40;
 
-    public const double MAX_FOOD = 100;
+    public int MAX_FOOD = 100;
 
-    private double currentFoodLevel = 0;
+    private int currentFoodLevel = 0;
 
     private ArrayList foodAvailable;
 
-    public double CurrentFoodLevel
+    public int CurrentFoodLevel
     {
         get { return currentFoodLevel; }
     }

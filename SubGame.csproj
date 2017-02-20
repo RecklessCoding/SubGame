@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Fading.cs" />
     <Compile Include="Assets\Scripts\Agent\Agent.cs" />
     <Compile Include="Assets\Scripts\Agent\AgentActionsHandler.cs" />
     <Compile Include="Assets\Scripts\Agent\AgentResourcesManager.cs" />

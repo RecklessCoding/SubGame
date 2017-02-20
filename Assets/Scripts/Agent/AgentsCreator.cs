@@ -4,25 +4,41 @@ using UnityEngine.UI;
 
 public class AgentsCreator : MonoBehaviour
 {
-
     public GameObject agent;
 
     public GameObject populationCounter;
 
-    public int agentsCount;
+    public GameObject infantsCounter;
+
+    public GameObject deathsCounter;
+
+    public int agentsCount = 0;
+
+    public int infantsCount = 0;
+
+    public int deathsCount = 0;
+
+    private const int INITIAL_POPULATION = 200; 
 
     private Text populationCounterTextbox;
+
+    private Text infantsCounterTextbox;
+
+    private Text deathsCounterTextbox;
 
     // Use this for initialization
     void Start()
     {
-
         Transform posBoundaries = GameObject.Find("HousesManager").transform;
         Vector3 pos;
 
         populationCounterTextbox = populationCounter.GetComponent<Text>();
 
-        for (int i = 0; i < 200; i++)
+        infantsCounterTextbox = infantsCounter.GetComponent<Text>();
+
+        deathsCounterTextbox = deathsCounter.GetComponent<Text>();
+
+        for (int i = 0; i < INITIAL_POPULATION; i++)
         {
             pos = GetRandomPos(posBoundaries);
 
@@ -34,9 +50,20 @@ public class AgentsCreator : MonoBehaviour
     {
         agentsCount = gameObject.transform.childCount;
         populationCounterTextbox.text = agentsCount.ToString();
+
+        infantsCounterTextbox.text = infantsCount.ToString();
+
+        deathsCount = (INITIAL_POPULATION + infantsCount) - agentsCount;
+        deathsCounterTextbox.text = deathsCount.ToString();
     }
 
-    public void SpawnAgent(Vector3 pos)
+    internal void BornAgent(Vector3 pos)
+    {
+        infantsCount++;
+        SpawnAgent(pos);
+    }
+
+    private void SpawnAgent(Vector3 pos)
     {
         GameObject newAgent = Instantiate(agent, pos, Quaternion.Euler(90, 0, 0)) as GameObject;
         newAgent.transform.SetParent(gameObject.transform);
@@ -53,7 +80,6 @@ public class AgentsCreator : MonoBehaviour
         Vector3 newVec = new Vector3(Random.Range(minX, maxX),
                                      0,
                                      Random.Range(minZ, maxZ));
-
         return newVec;
     }
 }

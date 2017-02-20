@@ -10,7 +10,7 @@ public class AgentActionsHandler
 
     private int nextAvailability = 0;
 
-    private const int RESOURCE_DELAY = 5;   
+    private const int RESOURCE_DELAY = 5;
 
     private const int BUILD_DELAY = 10;
 
@@ -28,7 +28,13 @@ public class AgentActionsHandler
 
     private int workIndex = 0;
 
-    public bool IsBuildingBridges
+    internal AgentActionsHandler(NavMeshAgentPath agentPathfinding, AgentResourcesManager agentResources)
+    {
+        this.agentPathfinding = agentPathfinding;
+        this.agentResources = agentResources;
+    }
+
+    internal bool IsBuildingBridges
     {
         get
         {
@@ -40,7 +46,7 @@ public class AgentActionsHandler
         }
     }
 
-    public bool IsBuildingHouses
+    internal bool IsBuildingHouses
     {
         get
         {
@@ -52,7 +58,7 @@ public class AgentActionsHandler
         }
     }
 
-    public bool IsGatheringFood
+    internal bool IsGatheringFood
     {
         get
         {
@@ -60,7 +66,7 @@ public class AgentActionsHandler
         }
     }
 
-    public bool IsGatheringRock
+    internal bool IsGatheringRock
     {
         get
         {
@@ -68,7 +74,7 @@ public class AgentActionsHandler
         }
     }
 
-    public bool IsGoingHome
+    internal bool IsGoingHome
     {
         get
         {
@@ -80,10 +86,15 @@ public class AgentActionsHandler
         }
     }
 
-    public AgentActionsHandler(NavMeshAgentPath agentPathfinding, AgentResourcesManager agentResources)
+    internal void Build()
     {
-        this.agentPathfinding = agentPathfinding;
-        this.agentResources = agentResources;
+        isBusy = true;
+        agentPathfinding.StopWalking();
+        agentResources.DecreaseRocks();
+        isBuildingBridges = false;
+        isBuildingHouses = false;
+
+        nextAvailability = Mathf.FloorToInt(Time.time) + BUILD_DELAY;
     }
 
     internal void PerformActionSelection()
@@ -98,7 +109,7 @@ public class AgentActionsHandler
         PerformActionSelection();
     }
 
-    public void GatherResource()
+    internal void GatherResource()
     {
         isBusy = true;
         nextAvailability = Mathf.FloorToInt(Time.time) + RESOURCE_DELAY;
@@ -183,15 +194,10 @@ public class AgentActionsHandler
         }
     }
 
-    internal void Build()
+    private void GoToRocks()
     {
-        isBusy = true;
-        agentPathfinding.StopWalking();
-        agentResources.DecreaseRocks();
-        isBuildingBridges = false;
-        isBuildingHouses = false;
-
-        nextAvailability = Mathf.FloorToInt(Time.time) + BUILD_DELAY;
+        isGatheringRock = true;
+        agentPathfinding.GoToRocks();
     }
 
     private void GoBuildHome()
@@ -220,8 +226,8 @@ public class AgentActionsHandler
         {
             house = agentPathfinding.FindNearestObject(housesAvailable).gameObject;
             AllocateHouse(house);
+        }
 
-        } 
         if (!agentResources.HasHome())
         {
             housesAvailable = GameObject.FindGameObjectsWithTag("HouseBuiltAvailable");
@@ -244,11 +250,5 @@ public class AgentActionsHandler
             return true;
         }
         return false;
-    }
-
-    private void GoToRocks()
-    {
-        isGatheringRock = true;
-        agentPathfinding.GoToRocks();
     }
 }

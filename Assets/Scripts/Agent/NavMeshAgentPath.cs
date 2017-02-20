@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
-using System;
 
 public class NavMeshAgentPath : MonoBehaviour
 {
@@ -35,13 +33,13 @@ public class NavMeshAgentPath : MonoBehaviour
         }
     }
 
-    public void StopWalking()
+    internal void StopWalking()
     {
         anim.SetBool("isWalking", false);
         agentNavMesh.speed = 0;
     }
 
-    public Transform GoToFood()
+    internal Transform GoToFood()
     {
         agentNavMesh.speed = 5;
 
@@ -68,14 +66,14 @@ public class NavMeshAgentPath : MonoBehaviour
         return target;
     }
 
-    public Transform GoToUnfinishedBridge()
+    internal Transform GoToUnfinishedBridge()
     {
         GameObject[] bridges = GameObject.FindGameObjectsWithTag("BridgeNotAvailable");
 
         return GoToTarget((FindNearestObject(bridges)));
     }
 
-    public void GoHome(GameObject home)
+    internal void GoHome(GameObject home)
     {
         if (home.transform)
         {
@@ -88,7 +86,7 @@ public class NavMeshAgentPath : MonoBehaviour
         }  
     }
 
-    public void GoToRocks()
+    internal void GoToRocks()
     {
         GoToTarget((FindNearestObject(GameObject.FindGameObjectsWithTag("Rock"))));
     }
@@ -112,6 +110,17 @@ public class NavMeshAgentPath : MonoBehaviour
         }
 
         return target;
+    }
+
+    internal void IncreaseSpeed()
+    {
+
+    }
+
+
+    internal void DecreaseSpeed()
+    {
+
     }
 
     private Transform GoToTarget(Transform target)

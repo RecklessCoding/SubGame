@@ -11,6 +11,8 @@ public class TimeDistribution : MonoBehaviour
 
     public GameObject houseSlider;
 
+    public float timeInDay = 240;
+
     private float remainer; 
 
     private float foodTime = 60;
@@ -58,6 +60,8 @@ public class TimeDistribution : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        AllocateDayTime();
+
         UpdateSliders();
     }
 
@@ -107,6 +111,14 @@ public class TimeDistribution : MonoBehaviour
         housesTime = newValue;
 
         TimeDistributionUpdated();
+    }
+
+    private void AllocateDayTime()
+    {
+        foodTime = timeInDay / 4;
+        bridgesTime = timeInDay / 4;
+        housesTime = timeInDay / 4;
+        restHouseTime = timeInDay / 4;
     }
 
     private void TimeDistributionUpdated()
