@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
 public class Agent : MonoBehaviour
 {
-    AgentResourcesManager agentResources = new AgentResourcesManager();
+    private AgentResourcesManager agentResources = new AgentResourcesManager();
 
-    NavMeshAgentPath agentPathfinding;
+    private NavMeshAgentPath agentPathfinding;
 
-    AgentActionsHandler agentActionsHandler;
+    private AgentActionsHandler agentActionsHandler;
 
-    private bool isAlive = true;
+    private AgentsDeathsHandler deathsCounters;
 
     private int nextStaminaUpdate;
 
@@ -18,9 +16,14 @@ public class Agent : MonoBehaviour
 
     private const int PROCREATE_CHANCE = 50;
 
+    private int bornTime;
+
+    private const int MAX_LIFE = 480;
+
     void Start()
     {
         nextStaminaUpdate = STAMINA_UPDATE_TIME;
+        bornTime = Mathf.FloorToInt(Time.time);
 
         agentPathfinding = gameObject.GetComponent("NavMeshAgentPath") as NavMeshAgentPath;
         agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
@@ -39,7 +42,7 @@ public class Agent : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != null  && gameObject != null)
+        if (other.gameObject != null && gameObject != null)
         {
             if (other.gameObject.tag.Equals("Food") && agentActionsHandler.IsGatheringFood)
             {
@@ -60,27 +63,19 @@ public class Agent : MonoBehaviour
         }
     }
 
-    public bool CanBuildBridge()
+    internal bool CanBuildBridge()
     {
         return agentResources.HasRocks() && agentActionsHandler.IsBuildingBridges;
     }
 
-    public bool CanBuildHouse()
+    internal bool CanBuildHouse()
     {
         return agentResources.HasRocks() && agentActionsHandler.IsGoingHome;
     }
 
-    public void StarNewWork(int workIndex)
+    internal void StarNewWork(int workIndex)
     {
         agentActionsHandler.StarNewWork(workIndex);
-    }
-
-    private void CheckIfAlive()
-    {
-        if (!isAlive)
-        {
-            KillItself();
-        }
     }
 
     private void GatherFood()
@@ -133,15 +128,18 @@ public class Agent : MonoBehaviour
         }
     }
 
-    public void KillItself()
+    internal void Build()
     {
-        if (agentResources.HasHome())
-        {
-            HouseScript home = agentResources.Home.GetComponent("HouseScript") as HouseScript;
-            home.RemoveAgent();
-        }
+        agentPathfinding.StopWalking();
+        agentActionsHandler.Build();
+    }
 
-        Destroy(gameObject, 1f);
+    internal void GotEaten()
+    {
+        AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
+        deathsHandler.AgentWasEaten();
+
+        KillItself();
     }
 
     private void UpdateStamina()
@@ -153,19 +151,37 @@ public class Agent : MonoBehaviour
         }
     }
 
-    public void Build()
-    {
-        agentPathfinding.StopWalking();
-        agentActionsHandler.Build();
-    }
-
     private void Tired()
     {
         agentResources.DecreaseStamina();
         if (agentResources.Stamina == 0)
         {
-            isAlive = false;
+            AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
+            deathsHandler.AgentStaved();
+
             KillItself();
         }
+    }
+
+    private void CheckIfAlive()
+    {
+        if (Time.time >= MAX_LIFE)
+        {
+            AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
+            deathsHandler.AgentDied();
+
+            KillItself();
+        }
+    }
+
+    private void KillItself()
+    {
+        if (agentResources.HasHome())
+        {
+            HouseScript home = agentResources.Home.GetComponent("HouseScript") as HouseScript;
+            home.RemoveAgent();
+        }
+
+        Destroy(gameObject, 1f);
     }
 }

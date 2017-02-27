@@ -29,7 +29,7 @@ public class PredatorsManager : MonoBehaviour
                     if (agents.Length > 0)
                     {
                         Agent agent = agents[Random.Range(0, agents.Length)].GetComponent("Agent") as Agent;
-                        agent.KillItself();
+                        agent.GotEaten();
                     }
                 }
             }

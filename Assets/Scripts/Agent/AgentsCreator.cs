@@ -1,42 +1,19 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 
 public class AgentsCreator : MonoBehaviour
 {
     public GameObject agent;
 
-    public GameObject populationCounter;
+    private const int INITIAL_POPULATION = 200;
 
-    public GameObject infantsCounter;
+    private int agentsCount = 0;
 
-    public GameObject deathsCounter;
+    private int infantsCount = 0;
 
-    public int agentsCount = 0;
-
-    public int infantsCount = 0;
-
-    public int deathsCount = 0;
-
-    private const int INITIAL_POPULATION = 200; 
-
-    private Text populationCounterTextbox;
-
-    private Text infantsCounterTextbox;
-
-    private Text deathsCounterTextbox;
-
-    // Use this for initialization
     void Start()
     {
         Transform posBoundaries = GameObject.Find("HousesManager").transform;
         Vector3 pos;
-
-        populationCounterTextbox = populationCounter.GetComponent<Text>();
-
-        infantsCounterTextbox = infantsCounter.GetComponent<Text>();
-
-        deathsCounterTextbox = deathsCounter.GetComponent<Text>();
 
         for (int i = 0; i < INITIAL_POPULATION; i++)
         {
@@ -49,12 +26,22 @@ public class AgentsCreator : MonoBehaviour
     void Update()
     {
         agentsCount = gameObject.transform.childCount;
-        populationCounterTextbox.text = agentsCount.ToString();
+    }
 
-        infantsCounterTextbox.text = infantsCount.ToString();
+    internal int HowManyAgentsAreALive
+    {
+        get
+        {
+            return agentsCount;
+        }
+    }
 
-        deathsCount = (INITIAL_POPULATION + infantsCount) - agentsCount;
-        deathsCounterTextbox.text = deathsCount.ToString();
+    internal int HowManyAgentsWereBorned
+    {
+        get
+        {
+            return infantsCount;
+        }
     }
 
     internal void BornAgent(Vector3 pos)

@@ -13,7 +13,7 @@ public class TimeDistribution : MonoBehaviour
 
     public float timeInDay = 240;
 
-    private float remainer; 
+    private float remainer;
 
     private float foodTime = 60;
 
@@ -23,9 +23,11 @@ public class TimeDistribution : MonoBehaviour
 
     private float restHouseTime = 60;
 
-    private float MAX_VALUE = 180;
+    private float dayLength = 180;
 
-    public float FoodTime
+    private float nightLength;
+
+    internal float FoodTime
     {
         get
         {
@@ -33,7 +35,7 @@ public class TimeDistribution : MonoBehaviour
         }
     }
 
-    public float BridgesTime
+    internal float BridgesTime
     {
         get
         {
@@ -41,14 +43,14 @@ public class TimeDistribution : MonoBehaviour
         }
     }
 
-    public float HousesTime
+    internal float HousesTime
     {
         get
         {
             return housesTime;
         }
     }
-    public float RestHousesTime
+    internal float RestHousesTime
     {
         get
         {
@@ -65,7 +67,7 @@ public class TimeDistribution : MonoBehaviour
         UpdateSliders();
     }
 
-    public void OnFoodSliderChange(float newValue)
+    internal void OnFoodSliderChange(float newValue)
     {
         float change = foodTime - newValue;
 
@@ -81,7 +83,7 @@ public class TimeDistribution : MonoBehaviour
         UpdateSliders();
     }
 
-    public void OnBridgesSliderChange(float newValue)
+    internal void OnBridgesSliderChange(float newValue)
     {
         float change = bridgesTime - newValue;
 
@@ -97,7 +99,7 @@ public class TimeDistribution : MonoBehaviour
         UpdateSliders();
     }
 
-    public void OnHousesSliderChange(float newValue)
+    internal void OnHousesSliderChange(float newValue)
     {
         float change = housesTime - newValue;
 
@@ -143,9 +145,9 @@ public class TimeDistribution : MonoBehaviour
             remainer = 0 - timeTobeUpdated;
         }
 
-        if (timeTobeUpdated > MAX_VALUE)
+        if (timeTobeUpdated > dayLength)
         {
-            timeTobeUpdated = MAX_VALUE;
+            timeTobeUpdated = dayLength;
             remainer = 0 + change;
         }
 
@@ -157,5 +159,23 @@ public class TimeDistribution : MonoBehaviour
         foodSlider.GetComponent<Slider>().value = foodTime;
         bridgesSlider.GetComponent<Slider>().value = bridgesTime;
         houseSlider.GetComponent<Slider>().value = housesTime;
+
+        foodSlider.GetComponent<Slider>().maxValue = dayLength;
+        bridgesSlider.GetComponent<Slider>().maxValue = dayLength;
+        houseSlider.GetComponent<Slider>().maxValue = dayLength;
+    }
+
+    internal void ChangeDayNightCycle(float factor)
+    {
+        foodTime = foodTime * factor;
+        bridgesTime = bridgesTime * factor;
+        housesTime = housesTime * factor;
+
+        dayLength = dayLength * factor;
+        nightLength = nightLength * factor;
+
+        timeInDay = timeInDay * factor;
+
+        UpdateSliders();
     }
 }
