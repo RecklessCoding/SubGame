@@ -26,6 +26,13 @@ public class TimeManager : MonoBehaviour {
 		
 	}
 
+
+    internal void OnTimeSliderChange(int factor)
+    {
+         
+    }
+
+
     internal void ChangeSpeed(int factor)
     {
         dayLength = dayLength / factor;
@@ -35,10 +42,5 @@ public class TimeManager : MonoBehaviour {
         agentsSpeed = agentsSpeed * factor;
 
         timeDistribution.ChangeDayNightCycle(factor);
-    }
-
-    internal void SpeepDown()
-    {
-
     }
 }

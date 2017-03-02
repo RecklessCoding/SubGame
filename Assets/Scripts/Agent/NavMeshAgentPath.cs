@@ -2,11 +2,11 @@
 
 public class NavMeshAgentPath : MonoBehaviour
 {
-    UnityEngine.AI.NavMeshAgent agentNavMesh;
+    private UnityEngine.AI.NavMeshAgent agentNavMesh;
 
     private Animator anim;
 
-    private float AGENT_SPEED;
+    private float maxSpeed;
 
     // Use this for initialization
     void Start()
@@ -15,11 +15,16 @@ public class NavMeshAgentPath : MonoBehaviour
         transform.GetComponent<UnityEngine.AI.NavMeshAgent>().updateRotation = false;
         agentNavMesh = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
-        AGENT_SPEED = agentNavMesh.speed;
+        maxSpeed = agentNavMesh.speed;
     }
 
     // Update is called once per frame
     void Update()
+    {
+        UpdateAnimation();
+    }
+
+    private void UpdateAnimation()
     {
         if (agentNavMesh.velocity.x == 0 && agentNavMesh.velocity.z == 0)
         {
@@ -33,15 +38,15 @@ public class NavMeshAgentPath : MonoBehaviour
         }
     }
 
-    internal void StopWalking()
+    internal void ChangeSpeed(int factor)
     {
-        anim.SetBool("isWalking", false);
-        agentNavMesh.speed = 0;
+        maxSpeed = maxSpeed * factor;
+        SetSpeed(maxSpeed);
     }
 
     internal Transform GoToFood()
     {
-        agentNavMesh.speed = 5;
+        SetSpeed(maxSpeed);
 
         bool isBottomForestAvailable = false;
         if (GameObject.FindGameObjectsWithTag("BridgeAvailable").Length > 0)
@@ -77,13 +82,24 @@ public class NavMeshAgentPath : MonoBehaviour
     {
         if (home.transform)
         {
-            Vector3 location = new Vector3(home.transform.position.x + 0.7f, 
+            Vector3 location = new Vector3(home.transform.position.x + 0.7f,
                 home.transform.position.y, home.transform.position.z - 0.7f);
-  
-            agentNavMesh.speed = AGENT_SPEED;
+
+            SetSpeed(maxSpeed);
             Debug.DrawLine(transform.position, location, Color.green);
             agentNavMesh.SetDestination(location);
-        }  
+        }
+    }
+
+    internal void StopWalking()
+    {
+        anim.SetBool("isWalking", false);
+        SetSpeed(0);
+    }
+
+    private void SetSpeed(float speed)
+    {
+        agentNavMesh.speed = speed;
     }
 
     internal void GoToRocks()
@@ -112,22 +128,12 @@ public class NavMeshAgentPath : MonoBehaviour
         return target;
     }
 
-    internal void IncreaseSpeed()
-    {
-
-    }
-
-
-    internal void DecreaseSpeed()
-    {
-
-    }
 
     private Transform GoToTarget(Transform target)
     {
         if (target)
         {
-            agentNavMesh.speed = AGENT_SPEED;
+            agentNavMesh.speed = maxSpeed;
             Debug.DrawLine(transform.position, target.position, Color.green);
             agentNavMesh.SetDestination(target.position);
         }

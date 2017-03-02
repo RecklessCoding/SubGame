@@ -184,4 +184,9 @@ public class Agent : MonoBehaviour
 
         Destroy(gameObject, 1f);
     }
+
+    internal void ChangeSpeed(int factor)
+    {
+        agentPathfinding.ChangeSpeed(factor);
+    }
 }
