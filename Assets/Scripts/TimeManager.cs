@@ -1,46 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-public class TimeManager : MonoBehaviour {
+public class TimeManager : MonoBehaviour
+{
 
     public GameObject agentsManager;
 
-    private TimeDistribution timeDistribution;
-
-    private float dayLength;
-
-    private float nightLength;
-
-    private float agentsSpeed;
+    private int[] availableSpeed = { -2, 1, 2, 4, 8 };
 
     // Use this for initialization
-    void Start () {
-
-        timeDistribution = agentsManager.GetComponent("TimeDistribution") as TimeDistribution;
-
-    }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-
-    internal void OnTimeSliderChange(int factor)
+    void Start()
     {
-         
     }
 
-
-    internal void ChangeSpeed(int factor)
+    public void OnTimeSliderChange(float value)
     {
-        dayLength = dayLength / factor;
-        nightLength = nightLength / factor;
+        int newSpeed = availableSpeed[(int) value];
 
+        if (newSpeed < 0)
+        {
+            ChangeSpeed(Math.Abs(1 / ((float) newSpeed)));
+        }
+        else
+        {
+            ChangeSpeed(newSpeed);
+        }
+    }
+     
 
-        agentsSpeed = agentsSpeed * factor;
-
+    private void ChangeSpeed(float factor)
+    {
+        TimeDistribution timeDistribution = agentsManager.GetComponent("TimeDistribution") as TimeDistribution;
         timeDistribution.ChangeDayNightCycle(factor);
+
+        AgentsManager agentMngr = agentsManager.GetComponent("AgentsManager") as AgentsManager;
+        agentMngr.ChangeSpeed(factor);
     }
 }

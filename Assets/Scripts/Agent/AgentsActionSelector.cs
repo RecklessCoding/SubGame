@@ -39,21 +39,44 @@ public class AgentsActionSelector : MonoBehaviour
     void Update()
     {
         getAgents();
-  
+
         nextWorkUpdateGroup1 = UpdateWorkList(agentsGroup1, nextWorkUpdateGroup1, ref worksIndex1);
         nextWorkUpdateGroup2 = UpdateWorkList(agentsGroup2, nextWorkUpdateGroup2, ref worksIndex2);
         nextWorkUpdateGroup3 = UpdateWorkList(agentsGroup3, nextWorkUpdateGroup3, ref worksIndex3);
         nextWorkUpdateGroup4 = UpdateWorkList(agentsGroup4, nextWorkUpdateGroup4, ref worksIndex4);
     }
 
-    public void ReStrategise()
+    internal void ReStrategise()
     {
         getAgents();
 
-        nextWorkUpdateGroup1 = UpdateWorkList(agentsGroup1,-1, ref worksIndex1);
+        nextWorkUpdateGroup1 = UpdateWorkList(agentsGroup1, -1, ref worksIndex1);
         nextWorkUpdateGroup2 = UpdateWorkList(agentsGroup2, -1, ref worksIndex2);
         nextWorkUpdateGroup3 = UpdateWorkList(agentsGroup3, -1, ref worksIndex3);
         nextWorkUpdateGroup4 = UpdateWorkList(agentsGroup4, -1, ref worksIndex4);
+    }
+
+
+    internal void IsNight()
+    {
+        worksIndex1 = 3;
+        worksIndex2 = 3;
+        worksIndex3 = 3;
+        worksIndex4 = 3;
+
+        nextWorkUpdateGroup1 = UpdateWorkList(agentsGroup1, -1, ref worksIndex1);
+        nextWorkUpdateGroup2 = UpdateWorkList(agentsGroup2, -1, ref worksIndex2);
+        nextWorkUpdateGroup3 = UpdateWorkList(agentsGroup3, -1, ref worksIndex3);
+        nextWorkUpdateGroup4 = UpdateWorkList(agentsGroup4, -1, ref worksIndex4);
+
+        isNight = true;
+    }
+
+    internal void IsDay()
+    {
+        isNight = false;
+
+        ReStrategise();
     }
 
     private void getAgents()
@@ -69,6 +92,14 @@ public class AgentsActionSelector : MonoBehaviour
         }
     }
 
+    internal void ChangeSpeed()
+    {
+        ReStrategise();
+        ReStrategise();
+        ReStrategise();
+
+    }
+
     private int UpdateWorkList(GameObject[] agentsArray, int nextWorkUpdate, ref int worksIndex)
     {
         if (Time.time >= nextWorkUpdate) // Time to pick a new work
@@ -76,9 +107,16 @@ public class AgentsActionSelector : MonoBehaviour
             TimeDistribution timeDistribution = gameObject.GetComponent("TimeDistribution") as TimeDistribution;
 
             worksIndex++;
-            if (worksIndex >= 3) // Completed all possible work orders
+            if (worksIndex >= 3)
             {
-                worksIndex = 0;
+                if (!isNight) // Completed all possible work orders
+                {
+                    worksIndex = 0;
+                }
+                else
+                {
+                    worksIndex = 3;
+                }
             }
 
             switch (worksIndex)
@@ -104,7 +142,8 @@ public class AgentsActionSelector : MonoBehaviour
         return nextWorkUpdate;
     }
 
-    private void CheckIfNight() {
+    private void CheckIfNight()
+    {
         if (isNight)
         {
             worksIndex1 = 3;

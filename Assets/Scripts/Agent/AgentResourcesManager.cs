@@ -6,11 +6,16 @@ public class AgentResourcesManager
 {
     private int food = 0;
 
-    private int stamina = 10;
+    private int stamina = 15;
 
     private int rocks = 0;
 
     private GameObject home = null;
+
+    public AgentResourcesManager()
+    {
+
+    }
 
     internal int Food
     {

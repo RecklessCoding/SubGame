@@ -5,13 +5,17 @@ public class ForestFood : MonoBehaviour
 {
     public GameObject foodObjectTemplate;
 
-    private int restockTime = 40;
+    public GameObject agentsManager;
 
-    public int MAX_FOOD = 100;
+    private float restockTime = 240;
+
+    public int maxFood = 40;
 
     private int currentFoodLevel = 0;
 
     private ArrayList foodAvailable;
+
+    private TimeDistribution td;
 
     public int CurrentFoodLevel
     {
@@ -23,10 +27,17 @@ public class ForestFood : MonoBehaviour
         UpdateFoodList();
         int i = foodAvailable.Count;
 
-        while (i < MAX_FOOD)
+        while (i < maxFood)
         {
             SpawnFood();
             i++;
+        }
+
+        if (agentsManager)
+        {
+            td = agentsManager.GetComponent("TimeDistribution") as TimeDistribution;
+
+            restockTime = td.TimeInDay;        
         }
     }
 
@@ -52,12 +63,12 @@ public class ForestFood : MonoBehaviour
     {
         if (Time.time >= restockTime)
         {
-            restockTime = Mathf.FloorToInt(Time.time) + 1;
+            restockTime = (Time.time) + td.TimeInDay;
 
             UpdateFoodList();
             int i = foodAvailable.Count;
 
-            while (i < MAX_FOOD)
+            while (i < maxFood)
             {
                 SpawnFood();
                 i++;

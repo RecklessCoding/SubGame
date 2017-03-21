@@ -10,9 +10,9 @@ public class AgentActionsHandler
 
     private int nextAvailability = 0;
 
-    private const int RESOURCE_DELAY = 5;
+    private const int RESOURCE_DELAY = 2;
 
-    private const int BUILD_DELAY = 10;
+    private const int BUILD_DELAY = 5;
 
     private bool isBusy = false;
 
@@ -89,7 +89,6 @@ public class AgentActionsHandler
     internal void Build()
     {
         isBusy = true;
-        agentPathfinding.StopWalking();
         agentResources.DecreaseRocks();
         isBuildingBridges = false;
         isBuildingHouses = false;
@@ -138,6 +137,9 @@ public class AgentActionsHandler
                     GoBuildBridge();
                     break;
                 case 2:
+                    GoHome();
+                    break;
+                case 3:
                     GoHome();
                     break;
             }

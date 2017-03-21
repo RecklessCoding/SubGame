@@ -2,43 +2,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AgentsDeathsHandler : MonoBehaviour {
+public class AgentsDeathsHandler : MonoBehaviour
+{
+    private int eatenCount = 0;
 
-    private int eatenCount;
+    private int starvedCount = 0;
 
-    private int starvedCount;
+    private int deathsCount = 0;
+        
+    private int totalDeathsCount = 0;
 
-    private int deathsCount;
+    private float averageDaysAgentsLived = 0;
 
-    private int totalDeathsCount;
+    private float totalDaysAgentsLived = 0;
+
+    private AgentsManager agentsManager;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
+        agentsManager = gameObject.GetComponent("AgentsManager") as AgentsManager;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         totalDeathsCount = eatenCount + starvedCount + deathsCount;
+        averageDaysAgentsLived = totalDaysAgentsLived / (totalDeathsCount);
     }
 
-    internal void AgentWasEaten()
+    internal void AgentWasEaten(float daysAgentLived)
     {
-        eatenCount++;
+        totalDaysAgentsLived = totalDaysAgentsLived + daysAgentLived;
+        eatenCount = eatenCount + 1;
     }
 
-    internal void AgentStaved()
+    internal void AgentStaved(float daysAgentLived)
     {
-        starvedCount++;
+        totalDaysAgentsLived = totalDaysAgentsLived + daysAgentLived;
+        starvedCount = starvedCount + 1;
     }
 
-    internal void AgentDied()
+    internal void AgentDied(float daysAgentLived)
     {
-        deathsCount++;
+        totalDaysAgentsLived = totalDaysAgentsLived + daysAgentLived;
+        deathsCount = deathsCount + 1;
     }
 
     internal int HowManyAgentsWereStarved
     {
-        get {
+        get
+        {
             return starvedCount;
         }
     }
@@ -56,6 +70,14 @@ public class AgentsDeathsHandler : MonoBehaviour {
         get
         {
             return deathsCount;
+        }
+    }
+
+    internal float HowManyDaysAgentsLived
+    {
+        get
+        {
+            return averageDaysAgentsLived;
         }
     }
 }

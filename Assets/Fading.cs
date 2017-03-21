@@ -7,7 +7,7 @@ public class Fading : MonoBehaviour
 
     public float fadeSpeed = 0.5f;
 
-    public float alpha = 0.5f;
+    public float alpha = 0.3f;
 
     private int drawDepth = -1000;
 

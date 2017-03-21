@@ -6,7 +6,7 @@ public class HouseScript : MonoBehaviour
 
     public int agentsAllocatedToHouse = 0;
 
-    private const int MAX_AGENTS = 5;
+    private const int MAX_AGENTS = 7;
 
     private int rocksNeeded = 11;
 
@@ -22,13 +22,24 @@ public class HouseScript : MonoBehaviour
         {
             child.gameObject.SetActive(false);
         }
+
         rocksNeeded = gameObject.transform.childCount;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Deterorate();
+        CheckForDeterorate();
+
+        if ((agentsAllocatedToHouse == 0) && (stage > -1))
+        {
+            DetorateHouse();
+        }
+
+        if (stage < 0)
+        {
+            stage = 0;
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -124,17 +135,25 @@ public class HouseScript : MonoBehaviour
         }
     }
 
-    private void Deterorate()
+    private void CheckForDeterorate()
     {
         if ((Time.time >= timeToDetarorate) && (stage > 0))
         {
-            timeToDetarorate = Mathf.FloorToInt(Time.time) + DETARORATION_TIMER;
-
-            transform.GetChild(stage).gameObject.SetActive(false);
-            stage = stage - 1;
-            transform.GetChild(stage).gameObject.SetActive(true);
-
-            Destroy();
+            DetorateHouse();
         }
+    }
+
+    private void DetorateHouse()
+    {
+        timeToDetarorate = Mathf.FloorToInt(Time.time) + DETARORATION_TIMER;
+
+        transform.GetChild(stage).gameObject.SetActive(false);
+        stage = stage - 1;
+        if (stage > 0)
+        {
+            transform.GetChild(stage).gameObject.SetActive(true);
+        }
+
+        Destroy();
     }
 }

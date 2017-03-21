@@ -23,6 +23,11 @@ public class FloodingManager : MonoBehaviour
         FloodRiver();
     }
 
+    internal void ChangeSpeed(float factor)
+    {
+        //nextFlood = nextFlood * factor
+    }
+
     private void FloodRiver()
     {
         if ((Time.time >= nextFlood))
@@ -36,9 +41,14 @@ public class FloodingManager : MonoBehaviour
                 if (bridgeScript != null)
                 {
                     bridgeScript.Destroy();
-                }
+                } 
             }
             timesInvoked++;
+
+            if (timesInvoked == 5)
+            {
+                nextFlood = Mathf.FloorToInt(Time.time) + FLOOD_TIMER;
+            }
         }
     }
 }

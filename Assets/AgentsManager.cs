@@ -4,26 +4,37 @@ using UnityEngine;
 
 public class AgentsManager : MonoBehaviour
 {
+    private int agentsCount = 0;
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        agentsCount = gameObject.transform.childCount;
 
+        if (agentsCount == 0)
+        {
+            // game over!
+            (transform.GetComponent("TimeDistribution") as TimeDistribution).EndGame();
+
+            (transform.GetComponent("AgentsCountersTxtboxesUpdater") as AgentsCountersTxtboxesUpdater).EndGame();
+
+        }
     }
 
-    internal void ChangeSpeed(int factor)
+    internal void ChangeSpeed(float factor)
     {
         Agent[] agents = GetAllAgents();
 
         foreach (Agent agent in agents)
         {
-            
+            agent.ChangeSpeed(factor);
+        }
+    }
+
+    internal int HowManyAgentsAreALive
+    {
+        get
+        {
+            return agentsCount;
         }
     }
 

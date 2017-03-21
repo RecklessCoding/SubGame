@@ -9,23 +9,43 @@ public class TimeDistribution : MonoBehaviour
 
     public GameObject bridgesSlider;
 
-    public GameObject houseSlider;
+    public GameObject housesSlider;
 
-    public float timeInDay = 240;
+    public GameObject foodLabel;
 
-    private float remainer;
+    public GameObject bridgesLabel;
 
-    private float foodTime = 60;
+    public GameObject housesLabel;
 
-    private float bridgesTime = 60;
+    public GameObject mainCamera;
 
-    private float housesTime = 60;
+    public float timeInDay = 120;
 
-    private float restHouseTime = 60;
+    public float foodTime = 30;
 
-    private float dayLength = 180;
+    public float bridgesTime = 30;
 
-    private float nightLength;
+    public float housesTime = 30;
+
+    public float dayLength = 90;
+
+    private float nightLength = 30;
+
+    public float nextNight = 0;
+    public float nextDay = 0;
+
+    public bool isNight = false;
+
+    private const float FOOD_TIME = 30;
+    private const float BRIDGE_TIME = 30;
+    private const float HOUSES_TIME = 30;
+    private const float DAY_LENGTH = 90;
+    private const float NIGHT_LENGTH = 30;
+    private const float TIME_IN_DAY = 120;
+
+    public int daysPassed = 0;
+
+    private bool isPlaying = true;
 
     internal float FoodTime
     {
@@ -50,77 +70,147 @@ public class TimeDistribution : MonoBehaviour
             return housesTime;
         }
     }
+
     internal float RestHousesTime
     {
         get
         {
-            return restHouseTime;
+            return nightLength;
         }
     }
 
+
+    internal float TimeInDay
+    {
+        get
+        {
+            return timeInDay;
+        }
+    }
+
+
+    internal int DaysPassed
+    {
+        get
+        {
+            return daysPassed;
+        }
+    }
 
     // Use this for initialization
     void Start()
     {
         AllocateDayTime();
 
-        UpdateSliders();
+        TimeDistributionUpdated();
+
+        nextNight = Mathf.FloorToInt(dayLength);
+    }
+
+    void Update()
+    {
+        if (isPlaying)
+        {
+            if (Time.time >= nextNight && !isNight) // Time to pick a new work
+            {
+                nextDay = Mathf.FloorToInt(nightLength) + Mathf.FloorToInt(Time.time);
+                isNight = true;
+
+                Fading overlay = mainCamera.GetComponent("Fading") as Fading;
+                overlay.enabled = true;
+
+                AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
+                agentsAS.IsNight();
+            }
+
+            if (Time.time >= nextDay && isNight) // Time to pick a new work
+            {
+                nextNight = Mathf.FloorToInt(dayLength) + Mathf.FloorToInt(Time.time);
+                isNight = false;
+
+                Fading overlay = mainCamera.GetComponent("Fading") as Fading;
+                overlay.enabled = false;
+
+                AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
+                agentsAS.IsDay();
+
+                daysPassed = daysPassed + 1;
+            }
+        }
+    }
+
+    internal void EndGame()
+    {
+        isPlaying = false;
+
+        Fading overlay = mainCamera.GetComponent("Fading") as Fading;
+        overlay.enabled = false;
+
     }
 
     internal void OnFoodSliderChange(float newValue)
     {
         float change = foodTime - newValue;
 
-        if ((bridgesTime == 0 || housesTime == 0) && (change < 0))
+        if (newValue >= dayLength)
         {
-            change = change * 2;
+            foodTime = newValue;
+            bridgesTime = 0;
+            housesTime = 0;
+        }
+        else
+        {
+            foodTime = newValue;
+            bridgesTime = UpdateTimeAllocation(bridgesTime, change);
+            housesTime = UpdateTimeAllocation(housesTime, change);
         }
 
-        foodTime = newValue;
-        bridgesTime = UpdateTimeAllocation(bridgesTime, change);
-        housesTime = UpdateTimeAllocation(housesTime, change);
-
-        UpdateSliders();
+        TimeDistributionUpdated();
     }
 
     internal void OnBridgesSliderChange(float newValue)
     {
         float change = bridgesTime - newValue;
 
-        if ((foodTime == 0 || housesTime == 0) && (change < 0))
+        if (newValue >= dayLength)
         {
-            change = change * 2;
+            foodTime = 0;
+            bridgesTime = newValue;
+            housesTime = 0;
+        }
+        else
+        {
+            foodTime = UpdateTimeAllocation(foodTime, change);
+            bridgesTime = newValue;
+            housesTime = UpdateTimeAllocation(housesTime, change);
         }
 
-        foodTime = UpdateTimeAllocation(foodTime, change);
-        bridgesTime = newValue;
-        housesTime = UpdateTimeAllocation(housesTime, change);
-
-        UpdateSliders();
+        TimeDistributionUpdated();
     }
 
     internal void OnHousesSliderChange(float newValue)
     {
         float change = housesTime - newValue;
 
-        if ((foodTime == 0 || bridgesTime == 0) && (change < 0))
+        if (newValue >= dayLength)
         {
-            change = change * 2;
+            foodTime = 0;
+            bridgesTime = 0;
+            housesTime = newValue;
         }
-
-        foodTime = UpdateTimeAllocation(foodTime, change);
-        bridgesTime = UpdateTimeAllocation(bridgesTime, change);
-        housesTime = newValue;
+        else
+        {
+            foodTime = UpdateTimeAllocation(foodTime, change);
+            bridgesTime = UpdateTimeAllocation(bridgesTime, change);
+            housesTime = newValue;
+        }
 
         TimeDistributionUpdated();
     }
 
     private void AllocateDayTime()
     {
-        foodTime = timeInDay / 4;
-        bridgesTime = timeInDay / 4;
-        housesTime = timeInDay / 4;
-        restHouseTime = timeInDay / 4;
+        dayLength = foodTime + bridgesTime + housesTime;
     }
 
     private void TimeDistributionUpdated()
@@ -137,18 +227,16 @@ public class TimeDistribution : MonoBehaviour
 
     private float UpdateTimeAllocation(float timeTobeUpdated, float change)
     {
-        timeTobeUpdated = timeTobeUpdated + change / 2;
+        timeTobeUpdated = timeTobeUpdated + (change / 2);
 
         if (timeTobeUpdated < 0)
         {
             timeTobeUpdated = 0;
-            remainer = 0 - timeTobeUpdated;
         }
 
-        if (timeTobeUpdated > dayLength)
+        if (timeTobeUpdated >= dayLength)
         {
             timeTobeUpdated = dayLength;
-            remainer = 0 + change;
         }
 
         return timeTobeUpdated;
@@ -156,26 +244,58 @@ public class TimeDistribution : MonoBehaviour
 
     private void UpdateSliders()
     {
-        foodSlider.GetComponent<Slider>().value = foodTime;
-        bridgesSlider.GetComponent<Slider>().value = bridgesTime;
-        houseSlider.GetComponent<Slider>().value = housesTime;
-
         foodSlider.GetComponent<Slider>().maxValue = dayLength;
         bridgesSlider.GetComponent<Slider>().maxValue = dayLength;
-        houseSlider.GetComponent<Slider>().maxValue = dayLength;
+        housesSlider.GetComponent<Slider>().maxValue = dayLength;
+
+        foodSlider.GetComponent<Slider>().value = foodTime;
+        bridgesSlider.GetComponent<Slider>().value = bridgesTime;
+        housesSlider.GetComponent<Slider>().value = housesTime;
+
+        foodLabel.GetComponent<Text>().text = (foodTime / dayLength * 100).ToString("0.0") + "%";
+        bridgesLabel.GetComponent<Text>().text = (bridgesTime / dayLength * 100).ToString("0.0") + "%";
+        housesLabel.GetComponent<Text>().text = (housesTime / dayLength * 100).ToString("0.0") + "%";
     }
 
     internal void ChangeDayNightCycle(float factor)
     {
-        foodTime = foodTime * factor;
-        bridgesTime = bridgesTime * factor;
-        housesTime = housesTime * factor;
+        if (factor != 1)
+        {
+            float foodTimeRatio = foodTime / dayLength;
+            float bridgesTimeRatio = bridgesTime / dayLength;
+            float housesTimeRatio = housesTime / dayLength;
 
-        dayLength = dayLength * factor;
-        nightLength = nightLength * factor;
+            dayLength = DAY_LENGTH / factor;
+            nightLength = NIGHT_LENGTH / factor;
 
-        timeInDay = timeInDay * factor;
+            timeInDay = TIME_IN_DAY / factor;
+
+            foodTime = foodTimeRatio * dayLength;
+            bridgesTime = bridgesTimeRatio * dayLength;
+            housesTime = housesTimeRatio * dayLength;
+
+            nextNight = ((nextNight - Mathf.FloorToInt(Time.time)) / factor) + Mathf.FloorToInt(Time.time);
+            nextDay = ((nextDay - Mathf.FloorToInt(Time.time)) / factor) + Mathf.FloorToInt(Time.time);
+
+        }
+        else
+        {
+            ResetTimes();
+        }
 
         UpdateSliders();
+
+        AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
+        agentsAS.ChangeSpeed();
+    }
+
+    private void ResetTimes()
+    {
+        foodTime = FOOD_TIME;
+        bridgesTime = BRIDGE_TIME;
+        housesTime = HOUSES_TIME;
+        dayLength = DAY_LENGTH;
+        nightLength = NIGHT_LENGTH;
+        timeInDay = TIME_IN_DAY;
     }
 }

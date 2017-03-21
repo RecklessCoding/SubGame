@@ -6,8 +6,6 @@ public class AgentsCreator : MonoBehaviour
 
     private const int INITIAL_POPULATION = 200;
 
-    private int agentsCount = 0;
-
     private int infantsCount = 0;
 
     void Start()
@@ -25,15 +23,6 @@ public class AgentsCreator : MonoBehaviour
 
     void Update()
     {
-        agentsCount = gameObject.transform.childCount;
-    }
-
-    internal int HowManyAgentsAreALive
-    {
-        get
-        {
-            return agentsCount;
-        }
     }
 
     internal int HowManyAgentsWereBorned

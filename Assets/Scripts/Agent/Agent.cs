@@ -2,6 +2,8 @@
 
 public class Agent : MonoBehaviour
 {
+    private GameObject agentsManager;
+
     private AgentResourcesManager agentResources = new AgentResourcesManager();
 
     private NavMeshAgentPath agentPathfinding;
@@ -10,23 +12,26 @@ public class Agent : MonoBehaviour
 
     private AgentsDeathsHandler deathsCounters;
 
-    private int nextStaminaUpdate;
+    private const int PROCREATE_CHANCE = 5;
 
-    private const int STAMINA_UPDATE_TIME = 10;
+    private int dateBorn = 0;
 
-    private const int PROCREATE_CHANCE = 50;
+    public float nextStaminaUpdate = 0;
 
-    private int bornTime;
+    public float staminaUpdateTime = 0;
 
-    private const int MAX_LIFE = 480;
+    public int maxLife = 0;
 
     void Start()
     {
-        nextStaminaUpdate = STAMINA_UPDATE_TIME;
-        bornTime = Mathf.FloorToInt(Time.time);
-
         agentPathfinding = gameObject.GetComponent("NavMeshAgentPath") as NavMeshAgentPath;
         agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
+
+        agentsManager = transform.parent.gameObject;
+
+        ResetToDefaultValues();
+
+        dateBorn = (agentsManager.GetComponent("TimeDistribution") as TimeDistribution).DaysPassed;
     }
 
     void Update()
@@ -38,28 +43,40 @@ public class Agent : MonoBehaviour
         {
             agentActionsHandler.PerformActionSelection();
         }
+        else
+        {
+            agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
+            agentActionsHandler.PerformActionSelection();
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != null && gameObject != null)
+        try
         {
-            if (other.gameObject.tag.Equals("Food") && agentActionsHandler.IsGatheringFood)
+            if ((other.gameObject != null) && (gameObject != null) && (agentActionsHandler != null))
             {
-                GatherFood();
+                if (other.gameObject.tag.Equals("Food") && agentActionsHandler.IsGatheringFood)
+                {
+                    GatherFood();
+                }
+                else if (other.gameObject.tag.Equals("Rock") && agentActionsHandler.IsGatheringRock)
+                {
+                    GatherRock();
+                }
+                else if (other.gameObject.tag.Equals("BridgeNotAvailable") && agentActionsHandler.IsBuildingBridges)
+                {
+                    Build();
+                }
+                else if (other.gameObject.Equals(agentResources.Home) && agentActionsHandler.IsGoingHome)
+                {
+                    GotHome();
+                }
             }
-            else if (other.gameObject.tag.Equals("Rock") && agentActionsHandler.IsGatheringRock)
-            {
-                GatherRock();
-            }
-            else if (other.gameObject.tag.Equals("BridgeNotAvailable") && agentActionsHandler.IsBuildingBridges)
-            {
-                Build();
-            }
-            else if (other.gameObject.Equals(agentResources.Home) && agentActionsHandler.IsGoingHome)
-            {
-                GotHome();
-            }
+        }
+        catch (System.Exception e) // REALLY BAD FIX!
+        {
+            Debug.LogError(e);
         }
     }
 
@@ -75,7 +92,22 @@ public class Agent : MonoBehaviour
 
     internal void StarNewWork(int workIndex)
     {
-        agentActionsHandler.StarNewWork(workIndex);
+        try
+        {
+            if ((gameObject != null) && (agentActionsHandler != null))
+            {
+                agentActionsHandler.StarNewWork(workIndex);
+            }
+            else
+            {
+                agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
+                agentActionsHandler.StarNewWork(workIndex);
+            }
+        }
+        catch (System.Exception e) // REALLY BAD FIX!
+        {
+            Debug.LogError(e);
+        }
     }
 
     private void GatherFood()
@@ -88,6 +120,7 @@ public class Agent : MonoBehaviour
     private void GatherResource()
     {
         agentPathfinding.StopWalking();
+
         agentActionsHandler.GatherResource();
     }
 
@@ -131,13 +164,16 @@ public class Agent : MonoBehaviour
     internal void Build()
     {
         agentPathfinding.StopWalking();
-        agentActionsHandler.Build();
+        if (agentActionsHandler != null)
+        {
+            agentActionsHandler.Build();
+        }
     }
 
     internal void GotEaten()
     {
         AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
-        deathsHandler.AgentWasEaten();
+        deathsHandler.AgentWasEaten((agentsManager.GetComponent("TimeDistribution") as TimeDistribution).DaysPassed - dateBorn);
 
         KillItself();
     }
@@ -146,7 +182,7 @@ public class Agent : MonoBehaviour
     {
         if (Time.time >= nextStaminaUpdate)
         {
-            nextStaminaUpdate = Mathf.FloorToInt(Time.time) + STAMINA_UPDATE_TIME;             // Change the next update (current second+1)
+            nextStaminaUpdate = Mathf.FloorToInt(Time.time) + staminaUpdateTime;             // Change the next update (current second+1)
             Tired();
         }
     }
@@ -157,18 +193,23 @@ public class Agent : MonoBehaviour
         if (agentResources.Stamina == 0)
         {
             AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
-            deathsHandler.AgentStaved();
+            deathsHandler.AgentStaved((agentsManager.GetComponent("TimeDistribution") as TimeDistribution).DaysPassed - dateBorn);
 
             KillItself();
+        }
+
+        if (agentResources.Stamina == 2)
+        {
+            //TODO
         }
     }
 
     private void CheckIfAlive()
     {
-        if (Time.time >= MAX_LIFE)
+        if (Time.time >= maxLife)
         {
             AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
-            deathsHandler.AgentDied();
+            deathsHandler.AgentDied((agentsManager.GetComponent("TimeDistribution") as TimeDistribution).DaysPassed - dateBorn);
 
             KillItself();
         }
@@ -182,11 +223,32 @@ public class Agent : MonoBehaviour
             home.RemoveAgent();
         }
 
-        Destroy(gameObject, 1f);
+        Destroy(gameObject);
     }
 
-    internal void ChangeSpeed(int factor)
+    internal void ChangeSpeed(float factor)
     {
+        if (factor != 1)
+        {
+            staminaUpdateTime = (agentsManager.GetComponent("TimeDistribution") as TimeDistribution).timeInDay;
+
+            nextStaminaUpdate = ((nextStaminaUpdate - Mathf.FloorToInt(Time.time)) / factor) + Mathf.FloorToInt(Time.time);
+
+            maxLife = Mathf.FloorToInt(staminaUpdateTime) * 30;
+        }
+        else
+        {
+            ResetToDefaultValues();
+        }
+
         agentPathfinding.ChangeSpeed(factor);
+    }
+
+    private void ResetToDefaultValues()
+    {
+        TimeDistribution td = agentsManager.GetComponent("TimeDistribution") as TimeDistribution;
+        maxLife = Mathf.FloorToInt(td.TimeInDay) * 15;
+        staminaUpdateTime = Mathf.FloorToInt(td.TimeInDay);
+        nextStaminaUpdate = ((nextStaminaUpdate - Mathf.FloorToInt(Time.time))) + Mathf.FloorToInt(Time.time) + Mathf.FloorToInt(staminaUpdateTime);
     }
 }

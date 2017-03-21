@@ -8,9 +8,9 @@ public class BridgeScript : MonoBehaviour
 
     public int stage = 0;
 
-    private int timeToDetarorate = 20;
+    private int timeToDetarorate = 240;
 
-    private const int DETARORATION_TIMER = 40;
+    private const int DETARORATION_TIMER = 120;
 
     // Use this for initialization
     void Start()
