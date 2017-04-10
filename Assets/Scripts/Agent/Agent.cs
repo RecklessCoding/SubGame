@@ -22,6 +22,12 @@ public class Agent : MonoBehaviour
 
     public int maxLife = 0;
 
+    private bool canProcreate = true;
+
+    private Color defaultColor;
+
+    private bool isNight = false;
+
     void Start()
     {
         agentPathfinding = gameObject.GetComponent("NavMeshAgentPath") as NavMeshAgentPath;
@@ -32,12 +38,15 @@ public class Agent : MonoBehaviour
         ResetToDefaultValues();
 
         dateBorn = (agentsManager.GetComponent("TimeDistribution") as TimeDistribution).DaysPassed;
+
+        SetRandomAge();
+
+        defaultColor = GetComponent<SpriteRenderer>().color;
     }
 
     void Update()
     {
         CheckIfAlive();
-        UpdateStamina();
 
         if (agentActionsHandler != null)
         {
@@ -48,6 +57,8 @@ public class Agent : MonoBehaviour
             agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
             agentActionsHandler.PerformActionSelection();
         }
+
+        UpdateStamina();
     }
 
     void OnTriggerEnter(Collider other)
@@ -80,6 +91,14 @@ public class Agent : MonoBehaviour
         }
     }
 
+    internal bool CanProcreate
+    {
+        set
+        {
+            canProcreate = value;
+        }
+    }
+
     internal bool CanBuildBridge()
     {
         return agentResources.HasRocks() && agentActionsHandler.IsBuildingBridges;
@@ -94,6 +113,15 @@ public class Agent : MonoBehaviour
     {
         try
         {
+            if (workIndex == 3)
+            {
+                isNight = true;
+            }
+            else
+            {
+                isNight = false;
+            }
+
             if ((gameObject != null) && (agentActionsHandler != null))
             {
                 agentActionsHandler.StarNewWork(workIndex);
@@ -115,6 +143,11 @@ public class Agent : MonoBehaviour
         agentResources.IncreaseFood();
         GatherResource();
         agentActionsHandler.Eat();
+
+        if (agentResources.Stamina > 3 && GetComponent<SpriteRenderer>().color != defaultColor)
+        {
+            GetComponent<SpriteRenderer>().color = defaultColor;
+        }
     }
 
     private void GatherResource()
@@ -140,7 +173,10 @@ public class Agent : MonoBehaviour
         }
         else
         {
-            Reproduce();
+            if (canProcreate && !isNight)
+            {
+                Reproduce();
+            }
         }
 
         agentActionsHandler.IsGoingHome = false;
@@ -185,6 +221,21 @@ public class Agent : MonoBehaviour
             nextStaminaUpdate = Mathf.FloorToInt(Time.time) + staminaUpdateTime;             // Change the next update (current second+1)
             Tired();
         }
+
+        if (agentResources.Stamina < 4)
+        {
+            SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+            renderer.color = new Color(0.5f, 0.5f, 0.5f, 1f); // Set to opaque gray
+        }
+
+        if (agentResources.Stamina < 2)
+        {
+            SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+            renderer.color = new Color(0.5f, 0.5f, 0.5f, 1f); // Set to opaque gray
+
+            agentActionsHandler.GoGatherFood();
+        }
+
     }
 
     private void Tired()
@@ -196,11 +247,6 @@ public class Agent : MonoBehaviour
             deathsHandler.AgentStaved((agentsManager.GetComponent("TimeDistribution") as TimeDistribution).DaysPassed - dateBorn);
 
             KillItself();
-        }
-
-        if (agentResources.Stamina == 2)
-        {
-            //TODO
         }
     }
 
@@ -250,5 +296,12 @@ public class Agent : MonoBehaviour
         maxLife = Mathf.FloorToInt(td.TimeInDay) * 15;
         staminaUpdateTime = Mathf.FloorToInt(td.TimeInDay);
         nextStaminaUpdate = ((nextStaminaUpdate - Mathf.FloorToInt(Time.time))) + Mathf.FloorToInt(Time.time) + Mathf.FloorToInt(staminaUpdateTime);
+    }
+
+    private void SetRandomAge()
+    {
+        int timeInDay = Mathf.FloorToInt((agentsManager.GetComponent("TimeDistribution") as TimeDistribution).TimeInDay);
+
+        maxLife = Random.Range(timeInDay, timeInDay * 15);
     }
 }

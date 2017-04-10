@@ -23,6 +23,20 @@ public class AgentsCreator : MonoBehaviour
 
     void Update()
     {
+
+    }
+
+    internal void MigratePopulation(int numberOfImmigrants)
+    {
+        Transform posBoundaries = GameObject.Find("HousesManager").transform;
+        Vector3 pos;
+
+        for (int i = 0; i < numberOfImmigrants; i++)
+        {
+            pos = GetRandomPos(posBoundaries);
+
+            SpawnAgent(pos);
+        }
     }
 
     internal int HowManyAgentsWereBorned

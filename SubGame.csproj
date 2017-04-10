@@ -76,7 +76,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AgentsManager.cs" />
+    <Compile Include="Assets\DoNotDestroyOnLoadHS.cs" />
     <Compile Include="Assets\Fading.cs" />
+    <Compile Include="Assets\HelpButtonScript.cs" />
+    <Compile Include="Assets\MainMenuInvoker.cs" />
+    <Compile Include="Assets\NightImageScript.cs" />
+    <Compile Include="Assets\RestartGame.cs" />
+    <Compile Include="Assets\SavePlayer.cs" />
     <Compile Include="Assets\Scripts\Agent\Agent.cs" />
     <Compile Include="Assets\Scripts\Agent\AgentActionsHandler.cs" />
     <Compile Include="Assets\Scripts\Agent\AgentResourcesManager.cs" />
@@ -93,13 +99,17 @@
     <Compile Include="Assets\Scripts\FloodingManager.cs" />
     <Compile Include="Assets\Scripts\Forest\FoodScript.cs" />
     <Compile Include="Assets\Scripts\Forest\ForestFood.cs" />
-    <Compile Include="Assets\Scripts\HouseScript.cs" />
-    <Compile Include="Assets\Scripts\HousesScript.cs" />
+    <Compile Include="Assets\Scripts\Houses\HouseScript.cs" />
+    <Compile Include="Assets\Scripts\Houses\HousesScript.cs" />
     <Compile Include="Assets\Scripts\KeyboardMovement.cs" />
     <Compile Include="Assets\Scripts\PredatorsManager.cs" />
     <Compile Include="Assets\Scripts\Rocks.cs" />
     <Compile Include="Assets\Scripts\SpriteScript.cs" />
     <Compile Include="Assets\Scripts\TimeManager.cs" />
+    <Compile Include="Assets\Scripts\UI\PlayerScoreList.cs" />
+    <Compile Include="Assets\Scripts\UI\ScoreManager.cs" />
+    <Compile Include="Assets\Scripts\UI\WindowManager.cs" />
+    <Compile Include="Assets\StartGame.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SpriteDepthInMap.cs" />

@@ -17,7 +17,7 @@ public class TimeDistribution : MonoBehaviour
 
     public GameObject housesLabel;
 
-    public GameObject mainCamera;
+    public GameObject nightObject;
 
     public float timeInDay = 120;
 
@@ -44,8 +44,40 @@ public class TimeDistribution : MonoBehaviour
     private const float TIME_IN_DAY = 120;
 
     public int daysPassed = 0;
+    public int daysUntilNextMigrant= 0;
 
     private bool isPlaying = true;
+
+    private float totalFoodTime = 0;
+    private float totalBridgesTime = 0;
+    private float totalHousesTime = 0;
+    private float averageFoodTime = 0;
+    private float averageBridgesTime = 0;
+    private float averageHousesTime = 0;
+
+    private int numberOfChanges = -1;
+
+    internal float AverageFoodTime
+    {
+        get
+        {
+            return averageFoodTime;
+        }
+    }
+    internal float AverageBridgesTime
+    {
+        get
+        {
+            return averageBridgesTime;
+        }
+    }
+    internal float AverageHouseTime
+    {
+        get
+        {
+            return averageHousesTime;
+        }
+    }
 
     internal float FoodTime
     {
@@ -105,6 +137,8 @@ public class TimeDistribution : MonoBehaviour
         TimeDistributionUpdated();
 
         nextNight = Mathf.FloorToInt(dayLength);
+
+        numberOfChanges = 0;
     }
 
     void Update()
@@ -116,8 +150,7 @@ public class TimeDistribution : MonoBehaviour
                 nextDay = Mathf.FloorToInt(nightLength) + Mathf.FloorToInt(Time.time);
                 isNight = true;
 
-                Fading overlay = mainCamera.GetComponent("Fading") as Fading;
-                overlay.enabled = true;
+                nightObject.SetActive(true);
 
                 AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
                 agentsAS.IsNight();
@@ -128,13 +161,19 @@ public class TimeDistribution : MonoBehaviour
                 nextNight = Mathf.FloorToInt(dayLength) + Mathf.FloorToInt(Time.time);
                 isNight = false;
 
-                Fading overlay = mainCamera.GetComponent("Fading") as Fading;
-                overlay.enabled = false;
+                nightObject.SetActive(false);
 
                 AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
                 agentsAS.IsDay();
 
                 daysPassed = daysPassed + 1;
+                daysUntilNextMigrant += 1;
+            }
+
+            if (daysUntilNextMigrant >= 10)
+            {
+                (gameObject.GetComponent("AgentsCreator") as AgentsCreator).MigratePopulation(50);
+                daysUntilNextMigrant = 0;
             }
         }
     }
@@ -143,9 +182,7 @@ public class TimeDistribution : MonoBehaviour
     {
         isPlaying = false;
 
-        Fading overlay = mainCamera.GetComponent("Fading") as Fading;
-        overlay.enabled = false;
-
+        Time.timeScale = 0;
     }
 
     internal void OnFoodSliderChange(float newValue)
@@ -255,6 +292,16 @@ public class TimeDistribution : MonoBehaviour
         foodLabel.GetComponent<Text>().text = (foodTime / dayLength * 100).ToString("0.0") + "%";
         bridgesLabel.GetComponent<Text>().text = (bridgesTime / dayLength * 100).ToString("0.0") + "%";
         housesLabel.GetComponent<Text>().text = (housesTime / dayLength * 100).ToString("0.0") + "%";
+
+        totalFoodTime += foodTime;
+        totalBridgesTime += bridgesTime;
+        totalHousesTime += housesTime;
+
+        numberOfChanges++;
+         
+        averageFoodTime = totalFoodTime / (numberOfChanges);
+        averageBridgesTime = totalBridgesTime / (numberOfChanges);
+        averageHousesTime = totalHousesTime / (numberOfChanges);
     }
 
     internal void ChangeDayNightCycle(float factor)

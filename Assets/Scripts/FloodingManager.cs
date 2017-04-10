@@ -2,7 +2,9 @@
 
 public class FloodingManager : MonoBehaviour
 {
-    private int nextFlood = 120;
+    public GameObject lighting;
+
+    private int nextFlood = 360;
 
     private const int FLOOD_TIMER = 360;
 
@@ -30,6 +32,17 @@ public class FloodingManager : MonoBehaviour
 
     private void FloodRiver()
     {
+        if ((Time.time >= nextFlood - 10))
+        {
+            lighting.SetActive(true);
+        }
+
+        if ((Time.time >= nextFlood - 5))
+        {
+            lighting.SetActive(false);
+        }
+
+
         if ((Time.time >= nextFlood))
         {
             nextFlood = Mathf.FloorToInt(Time.time) + FLOOD_TIMER - (timesInvoked * 5);
@@ -41,7 +54,7 @@ public class FloodingManager : MonoBehaviour
                 if (bridgeScript != null)
                 {
                     bridgeScript.Destroy();
-                } 
+                }
             }
             timesInvoked++;
 
@@ -49,6 +62,8 @@ public class FloodingManager : MonoBehaviour
             {
                 nextFlood = Mathf.FloorToInt(Time.time) + FLOOD_TIMER;
             }
+
+
         }
     }
 }

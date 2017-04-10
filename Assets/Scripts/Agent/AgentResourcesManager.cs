@@ -6,7 +6,7 @@ public class AgentResourcesManager
 {
     private int food = 0;
 
-    private int stamina = 15;
+    private int stamina = 7;
 
     private int rocks = 0;
 

@@ -10,20 +10,20 @@ public class AgentsActionSelector : MonoBehaviour
     private GameObject[] agents;
 
     public GameObject[] agentsGroup1;
-    public int nextWorkUpdateGroup1 = 0;
-    public int worksIndex1 = 0;
+    private int nextWorkUpdateGroup1 = 0;
+    private int worksIndex1 = 0;
 
     public GameObject[] agentsGroup2;
-    public int nextWorkUpdateGroup2 = 0;
-    public int worksIndex2 = 1;
+    private int nextWorkUpdateGroup2 = 0;
+    private int worksIndex2 = 1;
 
     public GameObject[] agentsGroup3;
-    public int nextWorkUpdateGroup3 = 0;
-    public int worksIndex3 = 1;
+    private int nextWorkUpdateGroup3 = 0;
+    private int worksIndex3 = 1;
 
     public GameObject[] agentsGroup4;
-    public int nextWorkUpdateGroup4 = 0;
-    public int worksIndex4 = 2;
+    private int nextWorkUpdateGroup4 = 0;
+    private int worksIndex4 = 2;
 
     void Start()
     {
@@ -59,6 +59,8 @@ public class AgentsActionSelector : MonoBehaviour
 
     internal void IsNight()
     {
+        isNight = true;
+
         worksIndex1 = 3;
         worksIndex2 = 3;
         worksIndex3 = 3;
@@ -69,7 +71,6 @@ public class AgentsActionSelector : MonoBehaviour
         nextWorkUpdateGroup3 = UpdateWorkList(agentsGroup3, -1, ref worksIndex3);
         nextWorkUpdateGroup4 = UpdateWorkList(agentsGroup4, -1, ref worksIndex4);
 
-        isNight = true;
     }
 
     internal void IsDay()

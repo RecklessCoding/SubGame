@@ -30,10 +30,11 @@ public class TimeManager : MonoBehaviour
 
     private void ChangeSpeed(float factor)
     {
-        TimeDistribution timeDistribution = agentsManager.GetComponent("TimeDistribution") as TimeDistribution;
-        timeDistribution.ChangeDayNightCycle(factor);
+        Time.timeScale = factor;
+        //TimeDistribution timeDistribution = agentsManager.GetComponent("TimeDistribution") as TimeDistribution;
+        //timeDistribution.ChangeDayNightCycle(factor);
 
-        AgentsManager agentMngr = agentsManager.GetComponent("AgentsManager") as AgentsManager;
-        agentMngr.ChangeSpeed(factor);
+        //AgentsManager agentMngr = agentsManager.GetComponent("AgentsManager") as AgentsManager;
+        //agentMngr.ChangeSpeed(factor);
     }
 }

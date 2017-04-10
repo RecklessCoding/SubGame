@@ -13,6 +13,8 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
     public GameObject averageLifespanTxtbox;
     public GameObject daysPassedTxtbox;
 
+    public GameObject ScoreBoardPanel;
+    public GameObject HSManager;
 
     private Text populationCounterTxt;
     private Text infantsCounterTxt;
@@ -23,6 +25,7 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
     private Text daysPassedTxt;
 
     private Text endGameTxt;
+    private ScoreManager scoreManager;
 
 
     private AgentsManager agentsManager;
@@ -31,6 +34,7 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
     private TimeDistribution timeDistribution;
 
     private float totalAgentsDied = 0;
+    private float totalPopulation = 0;
 
     // Use this for initialization
     void Start()
@@ -54,12 +58,14 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
         daysPassedTxt = daysPassedTxtbox.GetComponent<Text>();
 
         endGameTxt = endGameTxtbox.GetComponent<Text>();
+        scoreManager = HSManager.GetComponent("ScoreManager") as ScoreManager;
     }
 
     // Update is called once per frame
     void Update()
     {
-        populationCounterTxt.text = agentsManager.HowManyAgentsAreALive.ToString();
+        totalPopulation = agentsManager.HowManyAgentsAreALive;
+        populationCounterTxt.text = totalPopulation.ToString();
 
         infantsCounterTxt.text = agentsCreator.HowManyAgentsWereBorned.ToString();
 
@@ -72,6 +78,11 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
 
         totalAgentsDied = deathsHandler.HowManyAgentsWereEaten + deathsHandler.HowManyAgentsDied
             + deathsHandler.HowManyAgentsWereStarved;
+
+        totalPopulation = totalPopulation + totalAgentsDied;
+
+        scoreManager.SetScore(PlayerPrefs.GetString("UserName"), Mathf.FloorToInt(totalPopulation), agentsCreator.HowManyAgentsWereBorned, new int[] { deathsHandler.HowManyAgentsDied, deathsHandler.HowManyAgentsWereEaten, deathsHandler.HowManyAgentsWereStarved, Mathf.FloorToInt(totalPopulation) }, 
+            new float[] { timeDistribution.AverageFoodTime, timeDistribution.AverageBridgesTime, timeDistribution.AverageHouseTime });
     }
 
     internal void EndGame()
@@ -81,5 +92,7 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
         endGameTxt.text = "Total agents: " + totalAgentsDied.ToString() + "\n"
             + "Over days: " + timeDistribution.DaysPassed.ToString() + "\n" +
             "Note: Text here is just for testing purposes of ending the game";
+
+        ScoreBoardPanel.SetActive(true);
     }
 }

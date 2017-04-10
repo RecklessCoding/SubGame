@@ -86,6 +86,8 @@ public class AgentActionsHandler
         }
     }
 
+    public object Go { get; internal set; }
+
     internal void Build()
     {
         isBusy = true;
@@ -140,7 +142,7 @@ public class AgentActionsHandler
                     GoHome();
                     break;
                 case 3:
-                    GoHome();
+                        GoHome();
                     break;
             }
         }
@@ -152,7 +154,7 @@ public class AgentActionsHandler
         agentResources.IncreaseStamina();
     }
 
-    private void GoGatherFood()
+    internal void GoGatherFood()
     {
         isGatheringFood = true;
         agentPathfinding.GoToFood();
