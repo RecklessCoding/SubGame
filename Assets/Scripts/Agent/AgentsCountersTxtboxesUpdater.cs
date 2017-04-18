@@ -3,8 +3,6 @@ using UnityEngine.UI;
 
 public class AgentsCountersTxtboxesUpdater : MonoBehaviour
 {
-    public GameObject endGameTxtbox;
-
     public GameObject populationCounterTxtbox;
     public GameObject infantsCounterTxtbox;
     public GameObject eatenCounterTxtbox;
@@ -24,9 +22,7 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
     private Text averageLifespaneTxt;
     private Text daysPassedTxt;
 
-    private Text endGameTxt;
     private ScoreManager scoreManager;
-
 
     private AgentsManager agentsManager;
     private AgentsCreator agentsCreator;
@@ -57,7 +53,6 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
 
         daysPassedTxt = daysPassedTxtbox.GetComponent<Text>();
 
-        endGameTxt = endGameTxtbox.GetComponent<Text>();
         scoreManager = HSManager.GetComponent("ScoreManager") as ScoreManager;
     }
 
@@ -81,18 +76,12 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
 
         totalPopulation = totalPopulation + totalAgentsDied;
 
-        scoreManager.SetScore(PlayerPrefs.GetString("UserName"), Mathf.FloorToInt(totalPopulation), agentsCreator.HowManyAgentsWereBorned, new int[] { deathsHandler.HowManyAgentsDied, deathsHandler.HowManyAgentsWereEaten, deathsHandler.HowManyAgentsWereStarved, Mathf.FloorToInt(totalPopulation) }, 
+        scoreManager.SetScore(PlayerPrefs.GetString("UserName"), Mathf.FloorToInt(totalPopulation), agentsCreator.HowManyAgentsWereBorned, new int[] { deathsHandler.HowManyAgentsDied, deathsHandler.HowManyAgentsWereEaten, deathsHandler.HowManyAgentsWereStarved, Mathf.FloorToInt(totalPopulation) },
             new float[] { timeDistribution.AverageFoodTime, timeDistribution.AverageBridgesTime, timeDistribution.AverageHouseTime });
     }
 
     internal void EndGame()
     {
-        endGameTxtbox.active = true;
-
-        endGameTxt.text = "Total agents: " + totalAgentsDied.ToString() + "\n"
-            + "Over days: " + timeDistribution.DaysPassed.ToString() + "\n" +
-            "Note: Text here is just for testing purposes of ending the game";
-
         ScoreBoardPanel.SetActive(true);
     }
 }

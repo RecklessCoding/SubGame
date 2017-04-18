@@ -30,6 +30,10 @@ public class Agent : MonoBehaviour
 
     void Start()
     {
+
+        defaultColor = new Color(0, 1, 1, 1);
+        GetComponent<SpriteRenderer>().color = defaultColor;
+
         agentPathfinding = gameObject.GetComponent("NavMeshAgentPath") as NavMeshAgentPath;
         agentActionsHandler = new AgentActionsHandler(agentPathfinding, agentResources);
 
@@ -40,8 +44,6 @@ public class Agent : MonoBehaviour
         dateBorn = (agentsManager.GetComponent("TimeDistribution") as TimeDistribution).DaysPassed;
 
         SetRandomAge();
-
-        defaultColor = GetComponent<SpriteRenderer>().color;
     }
 
     void Update()
@@ -225,14 +227,11 @@ public class Agent : MonoBehaviour
         if (agentResources.Stamina < 4)
         {
             SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-            renderer.color = new Color(0.5f, 0.5f, 0.5f, 1f); // Set to opaque gray
+            renderer.color = new Color(1, 0, 1, 1); // Set to opaque gray
         }
 
         if (agentResources.Stamina < 2)
         {
-            SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-            renderer.color = new Color(0.5f, 0.5f, 0.5f, 1f); // Set to opaque gray
-
             agentActionsHandler.GoGatherFood();
         }
 

@@ -6,7 +6,7 @@ public class TimeManager : MonoBehaviour
 
     public GameObject agentsManager;
 
-    private int[] availableSpeed = { -2, 1, 2, 4, 8 };
+    private int[] availableSpeed = { -2, 1, 2, 4, 8, 16, 32 };
 
     // Use this for initialization
     void Start()

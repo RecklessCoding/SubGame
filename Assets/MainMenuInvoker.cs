@@ -7,6 +7,7 @@ public class MainMenuInvoker : MonoBehaviour
     public GameObject restartButton;
     public GameObject helpButton;
     public GameObject resumeButtom;
+    public GameObject exitButton;
 
     public GameObject goBackButtom;
     public GameObject resumeButtom2;
@@ -51,6 +52,7 @@ public class MainMenuInvoker : MonoBehaviour
         restartButton.SetActive(true);
         helpButton.SetActive(true);
         resumeButtom.SetActive(true);
+        exitButton.SetActive(true);
     }
 
     private void ResumeGame()
@@ -66,7 +68,7 @@ public class MainMenuInvoker : MonoBehaviour
         resumeButtom.SetActive(false);
         goBackButtom.SetActive(false);
         resumeButtom2.SetActive(false);
-
+        exitButton.SetActive(false);
         helpText.SetActive(false);
     }
 
@@ -74,6 +76,12 @@ public class MainMenuInvoker : MonoBehaviour
     {
         Application.LoadLevel(Application.loadedLevel);
     }
+
+    public void OnExitButtonClick()
+    {
+        Application.Quit();
+    }
+
 
     public void OnResumeButtonClick()
     {

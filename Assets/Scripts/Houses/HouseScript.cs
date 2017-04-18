@@ -16,6 +16,8 @@ public class HouseScript : MonoBehaviour
 
     private const int DETARORATION_TIMER = 240;
 
+    private bool isDecayOn = true;
+
     void Start()
     {
         foreach (Transform child in transform)
@@ -24,12 +26,25 @@ public class HouseScript : MonoBehaviour
         }
 
         rocksNeeded = gameObject.transform.childCount;
+
+
+        if (PlayerPrefs.GetInt("Decay") == 1)
+        {
+            isDecayOn = true;
+        }
+        else
+        {
+            isDecayOn = false;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckForDeterorate();
+        if (isDecayOn)
+        {
+            CheckForDeterorate();
+        }
 
         if ((agentsAllocatedToHouse == 0))
         {

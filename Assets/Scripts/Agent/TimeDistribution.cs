@@ -44,7 +44,7 @@ public class TimeDistribution : MonoBehaviour
     private const float TIME_IN_DAY = 120;
 
     public int daysPassed = 0;
-    public int daysUntilNextMigrant= 0;
+    public int daysUntilNextMigrant = 0;
 
     private bool isPlaying = true;
 
@@ -56,6 +56,8 @@ public class TimeDistribution : MonoBehaviour
     private float averageHousesTime = 0;
 
     private int numberOfChanges = -1;
+
+    private bool isImmigrationOn = true;
 
     internal float AverageFoodTime
     {
@@ -139,6 +141,15 @@ public class TimeDistribution : MonoBehaviour
         nextNight = Mathf.FloorToInt(dayLength);
 
         numberOfChanges = 0;
+
+        if (PlayerPrefs.GetInt("Immigration") == 1)
+        {
+            isImmigrationOn = true;
+        }
+        else
+        {
+            isImmigrationOn = false;
+        }
     }
 
     void Update()
@@ -172,7 +183,11 @@ public class TimeDistribution : MonoBehaviour
 
             if (daysUntilNextMigrant >= 10)
             {
-                (gameObject.GetComponent("AgentsCreator") as AgentsCreator).MigratePopulation(50);
+                if (isImmigrationOn)
+                {
+                    (gameObject.GetComponent("AgentsCreator") as AgentsCreator).MigratePopulation(50);
+                }
+
                 daysUntilNextMigrant = 0;
             }
         }
@@ -298,7 +313,7 @@ public class TimeDistribution : MonoBehaviour
         totalHousesTime += housesTime;
 
         numberOfChanges++;
-         
+
         averageFoodTime = totalFoodTime / (numberOfChanges);
         averageBridgesTime = totalBridgesTime / (numberOfChanges);
         averageHousesTime = totalHousesTime / (numberOfChanges);
