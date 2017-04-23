@@ -122,6 +122,14 @@ public class TimeDistribution : MonoBehaviour
         }
     }
 
+    internal float NightLength
+    {
+        get
+        {
+            return nightLength;
+        }
+    }
+
 
     internal int DaysPassed
     {
