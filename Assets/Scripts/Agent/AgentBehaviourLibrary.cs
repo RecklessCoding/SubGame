@@ -10,13 +10,13 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     private bool hasFood = false;
 
-    private bool hasRock = false;
+    public bool hasRock = false;
 
-    private GameObject home;
+    public GameObject home;
 
     private AgentNavigator agentNavigator;
 
-    private const int PROCREATE_CHANCE = 5;
+    private const int PROCREATE_CHANCE = 10;
 
     private bool isNight = false;
     private bool isGatheringFood;
@@ -29,7 +29,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        agentNavigator = gameObject.GetComponent<AgentNavigator>();
     }
 
 
@@ -42,29 +42,29 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void BecomeFull()
     {
-        GetComponent<SpriteRenderer>().color = new Color(1, 0, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(0, 0, 1, 1);
     }
 
     internal void BecomeAbleToProcreate()
     {
         canProcreate = true;
-        GetComponent<SpriteRenderer>().color = new Color(1, 0, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(0, 1, 1, 1);
     }
 
     internal void BecomeUnableToProcreate()
     {
         canProcreate = false;
-        GetComponent<SpriteRenderer>().color = new Color(1, 0, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(0.5f, 1, 0.5f, 1);
     }
 
     internal void BecomeHungry()
     {
-        GetComponent<SpriteRenderer>().color = new Color(1, 0, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
     }
 
     internal void BecomeStarving()
     {
-        GetComponent<SpriteRenderer>().color = new Color(1, 0, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
     }
 
     internal void SetHome(GameObject house)
@@ -75,6 +75,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
     /** -----------ACTIONS----------- */
     internal void GoToFood()
     {
+        isGatheringFood = true;
         agentNavigator.GoToFood();
     }
 
@@ -82,15 +83,13 @@ public class AgentBehaviourLibrary : MonoBehaviour
     {
         GatherResource();
         hasFood = true;
+        isGatheringFood = false;
     }
 
     internal void EatFood()
     {
-        if (hasFood)
-        {
-            staminaLevel++;
-            hasFood = false;
-        }
+        staminaLevel++;
+        hasFood = false;    
     }
 
     internal void GoToForest()
@@ -109,6 +108,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void StayHome()
     {
         agentNavigator.StopWalking();
+        isGoingToProcreate = false;
     }
 
     internal void GoToProcreate()
@@ -124,9 +124,12 @@ public class AgentBehaviourLibrary : MonoBehaviour
         if ((home.GetComponent<HouseScript>()).CanReproduce())
         {
             int dieRoll = UnityEngine.Random.Range(1, 100);
+            staminaLevel--;
 
             if (dieRoll < PROCREATE_CHANCE)
             {
+                staminaLevel--;
+
                 AgentsCreator agentsCreator = transform.parent.gameObject.GetComponent("AgentsCreator") as AgentsCreator;
                 agentsCreator.BornAgent(transform.position);
             }
@@ -142,12 +145,13 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void GoToRock()
     {
         agentNavigator.GoToRocks();
+        isGatheringRock = true;
     }
 
     internal void GatherRock()
     {
-        GatherResource();
         hasRock = true;
+        GatherResource();
     }
 
     internal void BuildBridge()

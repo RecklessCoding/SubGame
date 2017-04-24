@@ -5,11 +5,15 @@ using System;
 
 public class TimeDistribution : MonoBehaviour
 {
+    public GameObject predatorsManager;
+
     public GameObject foodSlider;
 
     public GameObject bridgesSlider;
 
     public GameObject housesSlider;
+
+    public GameObject procreationSlider;
 
     public GameObject foodLabel;
 
@@ -17,17 +21,21 @@ public class TimeDistribution : MonoBehaviour
 
     public GameObject housesLabel;
 
+    public GameObject procreationLabel;
+
     public GameObject nightObject;
 
-    public float timeInDay = 120;
+    private float timeInDay = 150;
 
-    public float foodTime = 30;
+    private float foodTime = 30;
 
-    public float bridgesTime = 30;
+    private float bridgesTime = 30;
 
-    public float housesTime = 30;
+    private float housesTime = 30;
 
-    public float dayLength = 90;
+    private float procreationTime = 30;
+
+    private float dayLength = 120;
 
     private float nightLength = 30;
 
@@ -35,13 +43,6 @@ public class TimeDistribution : MonoBehaviour
     public float nextDay = 0;
 
     public bool isNight = false;
-
-    private const float FOOD_TIME = 30;
-    private const float BRIDGE_TIME = 30;
-    private const float HOUSES_TIME = 30;
-    private const float DAY_LENGTH = 90;
-    private const float NIGHT_LENGTH = 30;
-    private const float TIME_IN_DAY = 120;
 
     public int daysPassed = 0;
     public int daysUntilNextMigrant = 0;
@@ -51,9 +52,12 @@ public class TimeDistribution : MonoBehaviour
     private float totalFoodTime = 0;
     private float totalBridgesTime = 0;
     private float totalHousesTime = 0;
+    private float totalProcreationTime = 0;
+
     private float averageFoodTime = 0;
     private float averageBridgesTime = 0;
     private float averageHousesTime = 0;
+    private float averageProcreationTime = 0;
 
     private int numberOfChanges = -1;
 
@@ -171,8 +175,13 @@ public class TimeDistribution : MonoBehaviour
 
                 nightObject.SetActive(true);
 
-                AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
-                agentsAS.IsNight();
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    AgentActionsSelector agent = transform.GetChild(i).GetComponent("AgentActionsSelector") as AgentActionsSelector;
+                    agent.IsNight();
+                }
+
+                predatorsManager.GetComponent<PredatorsManager>().setNight(true);
             }
 
             if (Time.time >= nextDay && isNight) // Time to pick a new work
@@ -182,11 +191,16 @@ public class TimeDistribution : MonoBehaviour
 
                 nightObject.SetActive(false);
 
-                AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
-                agentsAS.IsDay();
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    AgentActionsSelector agent = transform.GetChild(i).GetComponent("AgentActionsSelector") as AgentActionsSelector;
+                    agent.IsDay();
+                }
 
                 daysPassed = daysPassed + 1;
                 daysUntilNextMigrant += 1;
+
+                predatorsManager.GetComponent<PredatorsManager>().setNight(false);
             }
 
             if (daysUntilNextMigrant >= 10)
@@ -217,12 +231,14 @@ public class TimeDistribution : MonoBehaviour
             foodTime = newValue;
             bridgesTime = 0;
             housesTime = 0;
+            procreationTime = 0;
         }
         else
         {
             foodTime = newValue;
             bridgesTime = UpdateTimeAllocation(bridgesTime, change);
             housesTime = UpdateTimeAllocation(housesTime, change);
+            procreationTime = UpdateTimeAllocation(procreationTime, change);
         }
 
         TimeDistributionUpdated();
@@ -237,12 +253,14 @@ public class TimeDistribution : MonoBehaviour
             foodTime = 0;
             bridgesTime = newValue;
             housesTime = 0;
+            procreationTime = 0;
         }
         else
         {
             foodTime = UpdateTimeAllocation(foodTime, change);
             bridgesTime = newValue;
             housesTime = UpdateTimeAllocation(housesTime, change);
+            procreationTime = UpdateTimeAllocation(procreationTime, change);
         }
 
         TimeDistributionUpdated();
@@ -257,12 +275,36 @@ public class TimeDistribution : MonoBehaviour
             foodTime = 0;
             bridgesTime = 0;
             housesTime = newValue;
+            procreationTime = 0;
         }
         else
         {
             foodTime = UpdateTimeAllocation(foodTime, change);
             bridgesTime = UpdateTimeAllocation(bridgesTime, change);
             housesTime = newValue;
+            procreationTime = UpdateTimeAllocation(procreationTime, change);
+        }
+
+        TimeDistributionUpdated();
+    }
+
+    public void OnProcreationSliderChange(float newValue)
+    {
+        float change = procreationTime - newValue;
+
+        if (newValue >= dayLength)
+        {
+            foodTime = 0;
+            bridgesTime = 0;
+            housesTime = 0;
+            procreationTime = newValue;
+        }
+        else
+        {
+            foodTime = UpdateTimeAllocation(foodTime, change);
+            bridgesTime = UpdateTimeAllocation(bridgesTime, change);
+            housesTime = UpdateTimeAllocation(housesTime, change);
+            procreationTime = newValue;
         }
 
         TimeDistributionUpdated();
@@ -270,13 +312,13 @@ public class TimeDistribution : MonoBehaviour
 
     private void AllocateDayTime()
     {
-        dayLength = foodTime + bridgesTime + housesTime;
+        dayLength = foodTime + bridgesTime + housesTime + procreationTime;
     }
 
     private void TimeDistributionUpdated()
     {
         UpdateSliders();
-        AlertActionSelection();
+        //AlertActionSelection();
     }
 
     private void AlertActionSelection()
@@ -287,7 +329,7 @@ public class TimeDistribution : MonoBehaviour
 
     private float UpdateTimeAllocation(float timeTobeUpdated, float change)
     {
-        timeTobeUpdated = timeTobeUpdated + (change / 2);
+        timeTobeUpdated = timeTobeUpdated + (change / 3);
 
         if (timeTobeUpdated < 0)
         {
@@ -307,65 +349,28 @@ public class TimeDistribution : MonoBehaviour
         foodSlider.GetComponent<Slider>().maxValue = dayLength;
         bridgesSlider.GetComponent<Slider>().maxValue = dayLength;
         housesSlider.GetComponent<Slider>().maxValue = dayLength;
+        procreationSlider.GetComponent<Slider>().maxValue = dayLength;
 
         foodSlider.GetComponent<Slider>().value = foodTime;
         bridgesSlider.GetComponent<Slider>().value = bridgesTime;
         housesSlider.GetComponent<Slider>().value = housesTime;
+        procreationSlider.GetComponent<Slider>().value = procreationTime;
 
         foodLabel.GetComponent<Text>().text = (foodTime / dayLength * 100).ToString("0.0") + "%";
         bridgesLabel.GetComponent<Text>().text = (bridgesTime / dayLength * 100).ToString("0.0") + "%";
         housesLabel.GetComponent<Text>().text = (housesTime / dayLength * 100).ToString("0.0") + "%";
+        procreationLabel.GetComponent<Text>().text = (procreationTime / dayLength * 100).ToString("0.0") + "%";
 
         totalFoodTime += foodTime;
         totalBridgesTime += bridgesTime;
         totalHousesTime += housesTime;
+        totalProcreationTime += procreationTime;
 
         numberOfChanges++;
 
         averageFoodTime = totalFoodTime / (numberOfChanges);
         averageBridgesTime = totalBridgesTime / (numberOfChanges);
         averageHousesTime = totalHousesTime / (numberOfChanges);
-    }
-
-    internal void ChangeDayNightCycle(float factor)
-    {
-        if (factor != 1)
-        {
-            float foodTimeRatio = foodTime / dayLength;
-            float bridgesTimeRatio = bridgesTime / dayLength;
-            float housesTimeRatio = housesTime / dayLength;
-
-            dayLength = DAY_LENGTH / factor;
-            nightLength = NIGHT_LENGTH / factor;
-
-            timeInDay = TIME_IN_DAY / factor;
-
-            foodTime = foodTimeRatio * dayLength;
-            bridgesTime = bridgesTimeRatio * dayLength;
-            housesTime = housesTimeRatio * dayLength;
-
-            nextNight = ((nextNight - Mathf.FloorToInt(Time.time)) / factor) + Mathf.FloorToInt(Time.time);
-            nextDay = ((nextDay - Mathf.FloorToInt(Time.time)) / factor) + Mathf.FloorToInt(Time.time);
-
-        }
-        else
-        {
-            ResetTimes();
-        }
-
-        UpdateSliders();
-
-        AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
-        agentsAS.ChangeSpeed();
-    }
-
-    private void ResetTimes()
-    {
-        foodTime = FOOD_TIME;
-        bridgesTime = BRIDGE_TIME;
-        housesTime = HOUSES_TIME;
-        dayLength = DAY_LENGTH;
-        nightLength = NIGHT_LENGTH;
-        timeInDay = TIME_IN_DAY;
+        averageProcreationTime = procreationTime / (numberOfChanges);
     }
 }

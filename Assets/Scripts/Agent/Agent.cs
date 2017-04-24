@@ -275,7 +275,7 @@ public class Agent : MonoBehaviour
     {
         if (factor != 1)
         {
-            staminaUpdateTime = (agentsManager.GetComponent("TimeDistribution") as TimeDistribution).timeInDay;
+            staminaUpdateTime = (agentsManager.GetComponent("TimeDistribution") as TimeDistribution).TimeInDay;
 
             nextStaminaUpdate = ((nextStaminaUpdate - Mathf.FloorToInt(Time.time)) / factor) + Mathf.FloorToInt(Time.time);
 

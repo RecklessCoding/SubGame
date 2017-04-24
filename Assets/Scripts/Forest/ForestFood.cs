@@ -37,7 +37,7 @@ public class ForestFood : MonoBehaviour
         {
             td = agentsManager.GetComponent("TimeDistribution") as TimeDistribution;
 
-            restockTime = td.TimeInDay;        
+            restockTime = td.TimeInDay * 3;
         }
     }
 
@@ -53,7 +53,8 @@ public class ForestFood : MonoBehaviour
 
         foreach (GameObject food in GameObject.FindGameObjectsWithTag("Food"))
         {
-            if (isAppleOnThisForest(food.transform.position)){
+            if (isAppleOnThisForest(food.transform.position))
+            {
                 foodAvailable.Add(food);
             }
         }
@@ -70,13 +71,15 @@ public class ForestFood : MonoBehaviour
 
             while (i < maxFood)
             {
-                SpawnFood();
+                if (Random.RandomRange(0, 10) <= 4)
+                    SpawnFood();
+
                 i++;
             }
         }
     }
 
-    private bool isAppleOnThisForest(Vector3 pos, float radius =  1f)
+    private bool isAppleOnThisForest(Vector3 pos, float radius = 1f)
     {
         Collider[] colliders = Physics.OverlapSphere(pos, radius);
 

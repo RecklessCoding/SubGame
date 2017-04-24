@@ -4,7 +4,7 @@ public class AgentsCreator : MonoBehaviour
 {
     public GameObject agent;
 
-    private const int INITIAL_POPULATION = 200;
+    public int INITIAL_POPULATION = 100;
 
     private int infantsCount = 0;
 
@@ -19,11 +19,6 @@ public class AgentsCreator : MonoBehaviour
 
             SpawnAgent(pos);
         }
-    }
-
-    void Update()
-    {
-
     }
 
     internal void MigratePopulation(int numberOfImmigrants)

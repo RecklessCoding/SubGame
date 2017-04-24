@@ -18,9 +18,10 @@ public class AgentActionsSelector : MonoBehaviour
 
     private AgentBehaviourLibrary agentBehaviours;
 
-    private int worksIndex = 0;
+    public int worksIndex = -1;
     private float nextWorkUpdate = -1;
-    private bool isNight = false;
+    public bool isNight = false;
+    private bool canBeEaten = false;
 
     // Use this for initialization
     void Start()
@@ -28,20 +29,28 @@ public class AgentActionsSelector : MonoBehaviour
         agentsManager = transform.parent.gameObject;
         agentBehaviours = gameObject.GetComponent<AgentBehaviourLibrary>();
 
-        timeDistribution = gameObject.GetComponent("TimeDistribution") as TimeDistribution;
+        timeDistribution = gameObject.transform.parent.GetComponent("TimeDistribution") as TimeDistribution;
         dateBorn = timeDistribution.DaysPassed;
-        staminaUpdateTime = timeDistribution.TimeInDay;
+
+        nextStaminaUpdate = timeDistribution.TimeInDay;
+        staminaUpdateTime = timeDistribution.TimeInDay / 2;
 
         SetRandomAge();
         defaultColor = new Color(0, 1, 1, 1);
         GetComponent<SpriteRenderer>().color = defaultColor;
 
-        worksIndex = Random.Range(-1, 2) + 1;
+        worksIndex = Random.Range(-2, 3) + 1;
+
+        FindHouse();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (agentBehaviours.Home == null)
+        {
+            FindHouse();
+        }
         if (!agentBehaviours)
         {
             agentBehaviours = gameObject.GetComponent<AgentBehaviourLibrary>();
@@ -92,7 +101,29 @@ public class AgentActionsSelector : MonoBehaviour
     internal void IsDay()
     {
         isNight = false;
+        canBeEaten = true;
     }
+
+    internal bool CanBuildBridge()
+    {
+        if (!agentBehaviours)
+        {
+            agentBehaviours = gameObject.GetComponent<AgentBehaviourLibrary>();
+        }
+
+        return agentBehaviours.HasRock() && agentBehaviours.IsBuildingBridge;
+    }
+
+    internal bool CanBuildHouse()
+    {
+        if (!agentBehaviours)
+        {
+            agentBehaviours = gameObject.GetComponent<AgentBehaviourLibrary>();
+        }
+
+        return agentBehaviours.HasRock() && agentBehaviours.IsGoingHome;
+    }
+
 
     private void ActionSelection()
     {
@@ -110,7 +141,7 @@ public class AgentActionsSelector : MonoBehaviour
             switch (worksIndex)
             {
                 case 0:
-                    agentBehaviours.GoToFood();
+                    CEatFood();
                     break;
                 case 1:
                     agentBehaviours.GoToBridge();
@@ -203,6 +234,11 @@ public class AgentActionsSelector : MonoBehaviour
     {
         agentBehaviours.IsGoingHome = false;
 
+        if (isNight)
+        {
+            canBeEaten = false;
+        }
+
         if (agentBehaviours.HasHomeNotBuilt())
         {
             if (agentBehaviours.HasRock())
@@ -215,6 +251,7 @@ public class AgentActionsSelector : MonoBehaviour
             if (agentBehaviours.IsGoingToProcreate)
             {
                 agentBehaviours.Procreate();
+                agentBehaviours.StayHome();
             }
             else
             {
@@ -312,10 +349,13 @@ public class AgentActionsSelector : MonoBehaviour
 
     internal void GotEaten()
     {
-        AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
-        deathsHandler.AgentWasEaten(timeDistribution.DaysPassed - dateBorn);
+        if (canBeEaten)
+        {
+            AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
+            deathsHandler.AgentWasEaten(timeDistribution.DaysPassed - dateBorn);
 
-        KillItself();
+            KillItself();
+        }
     }
 
     private void KillItself()
@@ -333,6 +373,39 @@ public class AgentActionsSelector : MonoBehaviour
     {
         int timeInDay = Mathf.FloorToInt(timeDistribution.TimeInDay);
 
-        maxLife = Random.Range(timeInDay, timeInDay * 15);
+        maxLife = Random.Range(timeInDay * 15, timeInDay * 30);
+    }
+
+    private void FindHouse()
+    {
+        GameObject house;
+        GameObject[] housesAvailable = GameObject.FindGameObjectsWithTag("HouseNotBuiltAvailable");
+        if (housesAvailable.Length > 0)
+        {
+            house = gameObject.GetComponent<AgentNavigator>().FindNearestObject(housesAvailable).gameObject;
+            AllocateHouse(house);
+        }
+
+        if (agentBehaviours.Home == null)
+        {
+            housesAvailable = GameObject.FindGameObjectsWithTag("HouseBuiltAvailable");
+            if (housesAvailable.Length > 0)
+            {
+                house = gameObject.GetComponent<AgentNavigator>().FindNearestObject(housesAvailable).gameObject;
+                AllocateHouse(house);
+            }
+        }
+    }
+
+    private bool AllocateHouse(GameObject house)
+    {
+        HouseScript houseScript = house.GetComponent("HouseScript") as HouseScript;
+        if (houseScript.AllocateAgent())
+        {
+            agentBehaviours.SetHome(house);
+
+            return true;
+        }
+        return false;
     }
 }

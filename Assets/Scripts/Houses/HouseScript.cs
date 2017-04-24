@@ -125,7 +125,7 @@ public class HouseScript : MonoBehaviour
 
     private void Build(GameObject agentGO)
     {
-        Agent agent = agentGO.GetComponent("Agent") as Agent;
+        AgentActionsSelector agent = agentGO.GetComponent("AgentActionsSelector") as AgentActionsSelector;
 
         if (agent.CanBuildHouse() && (stage < (rocksNeeded)))
         {
