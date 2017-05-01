@@ -11,12 +11,13 @@ public class AgentsManager : MonoBehaviour
         agentsCount = gameObject.transform.childCount;
 
         if (agentsCount == 0)
-        {
-            // game over!
-            (transform.GetComponent("TimeDistribution") as TimeDistribution).EndGame();
+        {            // game over!
+
+            Debug.Log("Game over");
 
             (transform.GetComponent("AgentsCountersTxtboxesUpdater") as AgentsCountersTxtboxesUpdater).EndGame();
 
+            (transform.GetComponent("TimeDistribution") as TimeDistribution).EndGame();
         }
     }
 

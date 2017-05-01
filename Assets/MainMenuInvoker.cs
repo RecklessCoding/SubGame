@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuInvoker : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class MainMenuInvoker : MonoBehaviour
 
     public bool isPaused = false;
 
+    private float lastTimescale = 0;
 
     // Use this for initialization
     void Start()
@@ -27,7 +29,6 @@ public class MainMenuInvoker : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Debug.Log("Esc");
             if (isPaused)
             {
                 ResumeGame();
@@ -44,6 +45,7 @@ public class MainMenuInvoker : MonoBehaviour
     private void PauseGame()
     {
         isPaused = true;
+        lastTimescale = Time.timeScale;
         Time.timeScale = 0;
     }
 
@@ -58,7 +60,7 @@ public class MainMenuInvoker : MonoBehaviour
     private void ResumeGame()
     {
         isPaused = false;
-        Time.timeScale = 1;
+        Time.timeScale = lastTimescale;
     }
 
     private void HideMenu()
@@ -74,7 +76,7 @@ public class MainMenuInvoker : MonoBehaviour
 
     public void OnRestartButtonClick()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void OnExitButtonClick()

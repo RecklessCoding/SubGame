@@ -21,7 +21,7 @@ public class AgentActionsSelector : MonoBehaviour
     public int worksIndex = -1;
     private float nextWorkUpdate = -1;
     public bool isNight = false;
-    private bool canBeEaten = false;
+    public bool canBeEaten = false;
 
     // Use this for initialization
     void Start()
@@ -62,12 +62,27 @@ public class AgentActionsSelector : MonoBehaviour
         ActionSelection();
     }
 
+    void Awake()
+    {
+        if (agentBehaviours == null)
+        {
+            agentBehaviours = gameObject.GetComponent<AgentBehaviourLibrary>();
+        }
+
+    }
+
     void OnTriggerEnter(Collider collidedObject)
     {
         try
         {
             if ((collidedObject.gameObject != null) && (gameObject != null) && (agentBehaviours != null))
             {
+                if (collidedObject.gameObject.Equals(agentBehaviours.Home) && isNight)
+                {
+                    agentBehaviours.StayHome();
+                    canBeEaten = false;
+                }
+
                 if (collidedObject.gameObject.tag.Equals("Food") && agentBehaviours.IsGatheringFood)
                 {
                     agentBehaviours.GatherFood();
@@ -96,12 +111,15 @@ public class AgentActionsSelector : MonoBehaviour
     {
         nextWorkUpdate = nextWorkUpdate + timeDistribution.NightLength;
         isNight = true;
+
+        if (!agentBehaviours.isHome)
+            canBeEaten = true;
     }
 
     internal void IsDay()
     {
         isNight = false;
-        canBeEaten = true;
+        canBeEaten = false;
     }
 
     internal bool CanBuildBridge()
@@ -178,25 +196,57 @@ public class AgentActionsSelector : MonoBehaviour
             switch (worksIndex)
             {
                 case 0:
-                    nextWorkUpdate = UpdateTime(timeDistribution.FoodTime, nextWorkUpdate);
-                    break;
+                    if (timeDistribution.FoodTime > 0)
+                    {
+                        nextWorkUpdate = UpdateTime(timeDistribution.FoodTime);
+                        break;
+                    }
+                    else
+                    {
+                        ChangeWorkIndex();
+                        break;
+                    }
                 case 1:
-                    nextWorkUpdate = UpdateTime(timeDistribution.BridgesTime, nextWorkUpdate);
-                    break;
+                    if (timeDistribution.BridgesTime > 0)
+                    {
+                        nextWorkUpdate = UpdateTime(timeDistribution.BridgesTime);
+                        break;
+                    }
+                    else
+                    {
+                        ChangeWorkIndex();
+                        break;
+                    }
                 case 2:
-                    nextWorkUpdate = UpdateTime(timeDistribution.HousesTime, nextWorkUpdate);
-                    break;
+                    if (timeDistribution.HousesTime > 0)
+                    {
+                        nextWorkUpdate = UpdateTime(timeDistribution.HousesTime);
+                        break;
+                    }
+                    else
+                    {
+                        ChangeWorkIndex();
+                        break;
+                    }
                 case 3:
-                    nextWorkUpdate = UpdateTime(timeDistribution.RestHousesTime, nextWorkUpdate);
-                    break;
+                    if (timeDistribution.ProcreationTime > 0)
+                    {
+                        nextWorkUpdate = UpdateTime(timeDistribution.ProcreationTime);
+                        break;
+                    }
+                    else
+                    {
+                        ChangeWorkIndex();
+                        break;
+                    }
                 case 4:
-                    worksIndex = 0;
+                    worksIndex = Random.Range(-2, 3) + 1;
                     break;
             }
         }
     }
 
-    private float UpdateTime(float timeIncrease, float nextWorkUpdate)
+    private float UpdateTime(float timeIncrease)
     {
         if (timeIncrease == 0)
         {
@@ -233,11 +283,9 @@ public class AgentActionsSelector : MonoBehaviour
     private void CGotHome()
     {
         agentBehaviours.IsGoingHome = false;
-
-        if (isNight)
-        {
-            canBeEaten = false;
-        }
+        canBeEaten = false;
+        Debug.Log("Got home");
+        agentBehaviours.isHome = true;
 
         if (agentBehaviours.HasHomeNotBuilt())
         {
@@ -349,7 +397,7 @@ public class AgentActionsSelector : MonoBehaviour
 
     internal void GotEaten()
     {
-        if (canBeEaten)
+        if (canBeEaten && isNight)
         {
             AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
             deathsHandler.AgentWasEaten(timeDistribution.DaysPassed - dateBorn);
@@ -373,7 +421,7 @@ public class AgentActionsSelector : MonoBehaviour
     {
         int timeInDay = Mathf.FloorToInt(timeDistribution.TimeInDay);
 
-        maxLife = Random.Range(timeInDay * 15, timeInDay * 30);
+        maxLife = Random.Range(timeInDay * 15, timeInDay * 45);
     }
 
     private void FindHouse()
@@ -395,6 +443,9 @@ public class AgentActionsSelector : MonoBehaviour
                 AllocateHouse(house);
             }
         }
+
+        if (agentBehaviours.Home != null)
+            agentBehaviours.Home.GetComponent<HouseScript>().UpdateAgentReproduction(agentBehaviours.IsFull() || agentBehaviours.CanProcreate());
     }
 
     private bool AllocateHouse(GameObject house)

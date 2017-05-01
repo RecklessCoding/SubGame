@@ -3,6 +3,11 @@ using System.Collections;
 
 public class FoodScript : MonoBehaviour {
 
+    void Start()
+    {
+       // StartCoroutine(Grow());
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Agent")
@@ -11,8 +16,11 @@ public class FoodScript : MonoBehaviour {
         }
     }
 
-    public void Grow()
+    IEnumerator Grow()
     {
+        transform.tag = "FoodNotReady";
+        yield return new WaitForSeconds(500);
+        transform.tag = "Food";
 
     }
 

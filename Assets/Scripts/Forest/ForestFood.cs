@@ -7,11 +7,11 @@ public class ForestFood : MonoBehaviour
 
     public GameObject agentsManager;
 
-    private float restockTime = 240;
+    public float restockTime = 500;
 
-    public int maxFood = 40;
+    public int maxFood;
 
-    private int currentFoodLevel = 0;
+    public int currentFoodLevel = 0;
 
     private ArrayList foodAvailable;
 
@@ -102,6 +102,8 @@ public class ForestFood : MonoBehaviour
 
         GameObject food = Instantiate(foodObjectTemplate, pos, Quaternion.Euler(90, 0, 0)) as GameObject;
         food.transform.SetParent(gameObject.transform.parent.GetChild(2).transform);
+
+        currentFoodLevel++;
 
     }
 

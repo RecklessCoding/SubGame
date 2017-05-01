@@ -16,7 +16,9 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     private AgentNavigator agentNavigator;
 
-    private const int PROCREATE_CHANCE = 10;
+    public int PROCREATE_CHANCE = 15;
+
+    public bool isHome;
 
     private bool isNight = false;
     private bool isGatheringFood;
@@ -30,9 +32,16 @@ public class AgentBehaviourLibrary : MonoBehaviour
     void Start()
     {
         agentNavigator = gameObject.GetComponent<AgentNavigator>();
+        isHome = false;
     }
 
-
+    void Awake()
+    {
+        if (agentNavigator == null)
+        {
+            agentNavigator = gameObject.GetComponent<AgentNavigator>();
+        }
+    }
     /** ---- Status Updaters ---- */
 
     internal void GetHungrier()
@@ -43,6 +52,9 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void BecomeFull()
     {
         GetComponent<SpriteRenderer>().color = new Color(0, 0, 1, 1);
+
+        if (home != null)
+            home.GetComponent<HouseScript>().UpdateAgentReproduction(true);
     }
 
     internal void BecomeAbleToProcreate()
@@ -60,11 +72,17 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void BecomeHungry()
     {
         GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
+
+        if (home != null)
+            home.GetComponent<HouseScript>().UpdateAgentReproduction(false);
     }
 
     internal void BecomeStarving()
     {
         GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
+
+        if (home != null)
+            home.GetComponent<HouseScript>().UpdateAgentReproduction(false);
     }
 
     internal void SetHome(GameObject house)
@@ -75,6 +93,8 @@ public class AgentBehaviourLibrary : MonoBehaviour
     /** -----------ACTIONS----------- */
     internal void GoToFood()
     {
+        isHome = false;
+
         isGatheringFood = true;
         agentNavigator.GoToFood();
     }
@@ -88,8 +108,12 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void EatFood()
     {
-        staminaLevel++;
-        hasFood = false;    
+        staminaLevel = staminaLevel + 2;
+
+        if (staminaLevel > 15)
+            staminaLevel = 15;
+
+        hasFood = false;
     }
 
     internal void GoToForest()
@@ -107,12 +131,15 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void StayHome()
     {
+        isHome = true;
         agentNavigator.StopWalking();
         isGoingToProcreate = false;
     }
 
     internal void GoToProcreate()
     {
+        isHome = true;
+
         if (canProcreate)
         {
             isGoingToProcreate = true;
@@ -121,6 +148,10 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void Procreate()
     {
+        isHome = true;
+        if (home != null)
+            home.GetComponent<HouseScript>().UpdateAgentReproduction(canProcreate);
+
         if ((home.GetComponent<HouseScript>()).CanReproduce())
         {
             int dieRoll = UnityEngine.Random.Range(1, 100);
@@ -134,34 +165,48 @@ public class AgentBehaviourLibrary : MonoBehaviour
                 agentsCreator.BornAgent(transform.position);
             }
         }
+
+
+        if (home != null)
+            home.GetComponent<HouseScript>().UpdateAgentReproduction(false);
     }
 
     internal void GoToBridge()
     {
+        isHome = false;
+
         agentNavigator.GoToUnfinishedBridge();
         isBuildingBridge = true;
     }
 
     internal void GoToRock()
     {
+        isHome = false;
+
         agentNavigator.GoToRocks();
         isGatheringRock = true;
     }
 
     internal void GatherRock()
     {
+        isHome = false;
+
         hasRock = true;
         GatherResource();
     }
 
     internal void BuildBridge()
     {
+        isHome = false;
+
         agentNavigator.StopWalking();
         IsBuildingBridge = false;
     }
 
     internal void BuildHouse()
     {
+        isHome = true;
+
         agentNavigator.StopWalking();
         IsBuildingHouses = false;
     }
@@ -198,7 +243,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal bool HasStaminaToProcreate()
     {
-        if (10 <= staminaLevel)
+        if (8 <= staminaLevel)
             return true;
         else
             return false;

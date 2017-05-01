@@ -4,9 +4,9 @@ public class FloodingManager : MonoBehaviour
 {
     public GameObject lighting;
 
-    private int nextFlood = 360;
+    private int nextFlood = 750;
 
-    private const int FLOOD_TIMER = 360;
+    private const int FLOOD_TIMER = 1500;
 
     private int timesInvoked;
 

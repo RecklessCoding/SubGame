@@ -3,7 +3,6 @@ using System.Collections;
 
 public class HouseScript : MonoBehaviour
 {
-
     public int agentsAllocatedToHouse = 0;
 
     private const int MAX_AGENTS = 7;
@@ -17,6 +16,8 @@ public class HouseScript : MonoBehaviour
     private const int DETARORATION_TIMER = 240;
 
     private bool isDecayOn = true;
+
+    private int agentsAbleToReproduce = 0;
 
     void Start()
     {
@@ -65,6 +66,18 @@ public class HouseScript : MonoBehaviour
         }
     }
 
+    public void UpdateAgentReproduction(bool canReproduce)
+    {
+        if (canReproduce)
+        {
+            agentsAbleToReproduce++;
+        }
+        else
+        {
+            agentsAbleToReproduce--;
+        }
+    }
+
     public bool AllocateAgent()
     {
         if (agentsAllocatedToHouse < MAX_AGENTS)
@@ -88,7 +101,7 @@ public class HouseScript : MonoBehaviour
 
     public bool CanReproduce()
     {
-        return (agentsAllocatedToHouse > 2);
+        return (agentsAbleToReproduce > 2);
     }
 
     private void UpdateHouseStatus()

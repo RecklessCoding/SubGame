@@ -3,66 +3,47 @@ using System.Collections;
 
 public class PredatorsManager : MonoBehaviour
 {
-    private const int NUMBER_OF_PREDATORS = 10;
+    public GameObject agentManager;
 
-    private const int DAY_KILL_PERCENTAGE = 10;
-
-    private const int NIGHT_KILL_PERCENTAGE = 50;
-
-    private int killTime = 150;
-
-    private int timeToKill = 75;
+    private const int NIGHT_KILL_PERCENTAGE = 75;
 
     private bool isNight = false;
 
-    void Start()
-    {
-
-    }
+    private bool wasUsed = false;
 
     internal void setNight(bool value)
     {
         isNight = value;
+        wasUsed = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time >= timeToKill)
+        if (isNight && !wasUsed)
         {
-            timeToKill = Mathf.FloorToInt(Time.time) + killTime;
-            GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
-
-            for (int i = 0; i < NUMBER_OF_PREDATORS; i++)
-            {
-                int killOrNot = Random.Range(0, 100);
-
-                if (!isNight)
-                    if (killOrNot < DAY_KILL_PERCENTAGE)
-                    {
-                        if (agents.Length > 0)
-                        {
-                            AgentActionsSelector agent = agents[Random.Range(0, agents.Length)].GetComponent("AgentActionsSelector") as AgentActionsSelector;
-                            agent.GotEaten();
-                        }
-                    }
-            }
+            //KillAgents();
+            StartCoroutine(KillAgents());
+            wasUsed = true;
         }
+    }
 
+    private IEnumerator KillAgents()
+    {
+        yield return new WaitForSeconds(30f);
+        AgentActionsSelector[] agents = agentManager.transform.GetComponentsInChildren<AgentActionsSelector>();
+        // int killOrNot = Random.Range(0, 100);
+
+        //   if (killOrNot < NIGHT_KILL_PERCENTAGE)
         if (isNight)
-        {
-            timeToKill = Mathf.FloorToInt(Time.time) + killTime;
-            GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
-            int killOrNot = Random.Range(0, 100);
-
-            if (killOrNot < NIGHT_KILL_PERCENTAGE)
+            if (agents.Length > 0)
             {
-                if (agents.Length > 0)
+                //                for (int i = 0; i < agents.Length; i++)
+                for (int i = 0; i < agents.Length/10; i++)
                 {
-                    AgentActionsSelector agent = agents[Random.Range(0, agents.Length)].GetComponent("AgentActionsSelector") as AgentActionsSelector;
+                    AgentActionsSelector agent = agents[i].GetComponent("AgentActionsSelector") as AgentActionsSelector;
                     agent.GotEaten();
-                }
+                }         
             }
-        }
     }
 }

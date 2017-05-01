@@ -25,7 +25,7 @@ public class TimeDistribution : MonoBehaviour
 
     public GameObject nightObject;
 
-    private float timeInDay = 150;
+    private float timeInDay = 180;
 
     private float foodTime = 30;
 
@@ -37,7 +37,7 @@ public class TimeDistribution : MonoBehaviour
 
     private float dayLength = 120;
 
-    private float nightLength = 30;
+    private float nightLength = 60;
 
     public float nextNight = 0;
     public float nextDay = 0;
@@ -109,11 +109,11 @@ public class TimeDistribution : MonoBehaviour
         }
     }
 
-    internal float RestHousesTime
+    internal float ProcreationTime
     {
         get
         {
-            return nightLength;
+            return procreationTime;
         }
     }
 
@@ -215,10 +215,15 @@ public class TimeDistribution : MonoBehaviour
         }
     }
 
+
+    void Awake()
+    {
+    }
+
+
     internal void EndGame()
     {
         isPlaying = false;
-
         Time.timeScale = 0;
     }
 

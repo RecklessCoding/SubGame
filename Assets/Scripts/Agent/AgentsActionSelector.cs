@@ -132,7 +132,7 @@ public class AgentsActionSelector : MonoBehaviour
                     nextWorkUpdate = UpdateTime(timeDistribution.HousesTime, nextWorkUpdate);
                     break;
                 case 3:
-                    nextWorkUpdate = UpdateTime(timeDistribution.RestHousesTime, nextWorkUpdate);
+                    nextWorkUpdate = UpdateTime(timeDistribution.ProcreationTime, nextWorkUpdate);
                     break;
             }
             AlertAgents(agentsArray, worksIndex);
