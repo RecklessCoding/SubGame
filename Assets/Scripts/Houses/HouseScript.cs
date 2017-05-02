@@ -11,9 +11,9 @@ public class HouseScript : MonoBehaviour
 
     private int stage = 0;
 
-    private int timeToDetarorate = 480;
+    private int timeToDetarorate = 500;
 
-    private const int DETARORATION_TIMER = 240;
+    private const int DETARORATION_TIMER = 750;
 
     private bool isDecayOn = true;
 
@@ -47,10 +47,10 @@ public class HouseScript : MonoBehaviour
             CheckForDeterorate();
         }
 
-        if ((agentsAllocatedToHouse == 0))
-        {
-            DetorateHouse();
-        }
+        //       if ((agentsAllocatedToHouse == 0))
+        //     {
+        //  DetorateHouse();
+        //   }
 
         if (stage < 0)
         {
@@ -167,7 +167,7 @@ public class HouseScript : MonoBehaviour
     {
         if ((Time.time >= timeToDetarorate) && (stage > 0))
         {
-            if (Random.Range(0, 100) < 50)
+            if (Random.Range(0, 100) < 75)
             {
                 DetorateHouse();
             }

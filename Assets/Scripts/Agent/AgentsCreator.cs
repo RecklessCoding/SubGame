@@ -4,7 +4,7 @@ public class AgentsCreator : MonoBehaviour
 {
     public GameObject agent;
 
-    private int INITIAL_POPULATION = 150;
+    private int INITIAL_POPULATION = 50;
 
     private int infantsCount = 0;
 

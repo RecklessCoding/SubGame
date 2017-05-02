@@ -30,19 +30,22 @@ public class PredatorsManager : MonoBehaviour
 
     private IEnumerator KillAgents()
     {
-        yield return new WaitForSeconds(30f);
+        yield return new WaitForSeconds(60f);
         AgentActionsSelector[] agents = agentManager.transform.GetComponentsInChildren<AgentActionsSelector>();
-        // int killOrNot = Random.Range(0, 100);
+         int killOrNot = Random.Range(0, 100);
 
-        //   if (killOrNot < NIGHT_KILL_PERCENTAGE)
         if (isNight)
             if (agents.Length > 0)
             {
-                //                for (int i = 0; i < agents.Length; i++)
-                for (int i = 0; i < agents.Length/10; i++)
+                               for (int i = 0; i < agents.Length; i++)
+               // for (int i = 0; i < agents.Length/10; i++)
                 {
-                    AgentActionsSelector agent = agents[i].GetComponent("AgentActionsSelector") as AgentActionsSelector;
-                    agent.GotEaten();
+                    if (killOrNot < NIGHT_KILL_PERCENTAGE)
+                    {
+                        AgentActionsSelector agent = agents[i].GetComponent("AgentActionsSelector") as AgentActionsSelector;
+                        agent.GotEaten();
+                    }
+
                 }         
             }
     }

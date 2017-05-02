@@ -25,19 +25,19 @@ public class TimeDistribution : MonoBehaviour
 
     public GameObject nightObject;
 
-    private float timeInDay = 180;
+    private float timeInDay = 270;
 
-    private float foodTime = 30;
+    private float foodTime = 90;
 
-    private float bridgesTime = 30;
+    private float bridgesTime = 0;
 
-    private float housesTime = 30;
+    private float housesTime = 90;
 
-    private float procreationTime = 30;
+    private float procreationTime = 0;
 
-    private float dayLength = 120;
+    private float dayLength = 180;
 
-    private float nightLength = 60;
+    private float nightLength = 90;
 
     public float nextNight = 0;
     public float nextDay = 0;

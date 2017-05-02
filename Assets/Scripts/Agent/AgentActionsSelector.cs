@@ -33,7 +33,7 @@ public class AgentActionsSelector : MonoBehaviour
         dateBorn = timeDistribution.DaysPassed;
 
         nextStaminaUpdate = timeDistribution.TimeInDay;
-        staminaUpdateTime = timeDistribution.TimeInDay / 2;
+        staminaUpdateTime = timeDistribution.TimeInDay;
 
         SetRandomAge();
         defaultColor = new Color(0, 1, 1, 1);
@@ -75,12 +75,13 @@ public class AgentActionsSelector : MonoBehaviour
     {
         try
         {
+
             if ((collidedObject.gameObject != null) && (gameObject != null) && (agentBehaviours != null))
             {
                 if (collidedObject.gameObject.Equals(agentBehaviours.Home) && isNight)
                 {
-                    agentBehaviours.StayHome();
                     canBeEaten = false;
+                    agentBehaviours.StayHome();
                 }
 
                 if (collidedObject.gameObject.tag.Equals("Food") && agentBehaviours.IsGatheringFood)
@@ -105,6 +106,21 @@ public class AgentActionsSelector : MonoBehaviour
         {
             Debug.LogError(e);
         }
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (agentBehaviours.home != null)
+            if (other.gameObject.Equals(agentBehaviours.Home) && isNight)
+            {
+                canBeEaten = false;
+                agentBehaviours.StayHome();
+            }
+            else if (other.gameObject.Equals(agentBehaviours.Home) && agentBehaviours.IsGoingHome)
+            {
+                canBeEaten = false;
+                CGotHome();
+            }
     }
 
     internal void IsNight()
@@ -152,7 +168,7 @@ public class AgentActionsSelector : MonoBehaviour
 
         if (isNight)
         {
-            agentBehaviours.GoToHome();
+            CHomeBuilding();
         }
         else
         {
@@ -284,7 +300,6 @@ public class AgentActionsSelector : MonoBehaviour
     {
         agentBehaviours.IsGoingHome = false;
         canBeEaten = false;
-        Debug.Log("Got home");
         agentBehaviours.isHome = true;
 
         if (agentBehaviours.HasHomeNotBuilt())
@@ -293,16 +308,16 @@ public class AgentActionsSelector : MonoBehaviour
             {
                 agentBehaviours.BuildHouse();
             }
+            else
+            {
+                CHomeBuilding();
+            }
         }
         else
         {
             if (agentBehaviours.IsGoingToProcreate)
             {
                 agentBehaviours.Procreate();
-                agentBehaviours.StayHome();
-            }
-            else
-            {
                 agentBehaviours.StayHome();
             }
         }
@@ -363,10 +378,6 @@ public class AgentActionsSelector : MonoBehaviour
         {
             agentBehaviours.BecomeAbleToProcreate();
         }
-        else if (!agentBehaviours.HasStaminaToProcreate())
-        {
-            agentBehaviours.BecomeUnableToProcreate();
-        }
         else if (agentBehaviours.IsHungry())
         {
             agentBehaviours.BecomeHungry();
@@ -381,6 +392,10 @@ public class AgentActionsSelector : MonoBehaviour
             deathsHandler.AgentStaved(timeDistribution.DaysPassed - dateBorn);
 
             KillItself();
+        }
+        else
+        {
+            agentBehaviours.BecomeUnableToProcreate();
         }
     }
 

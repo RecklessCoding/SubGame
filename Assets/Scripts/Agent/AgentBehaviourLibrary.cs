@@ -71,7 +71,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void BecomeHungry()
     {
-        GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
+        GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 1);
 
         if (home != null)
             home.GetComponent<HouseScript>().UpdateAgentReproduction(false);
@@ -138,8 +138,6 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void GoToProcreate()
     {
-        isHome = true;
-
         if (canProcreate)
         {
             isGoingToProcreate = true;
@@ -243,7 +241,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal bool HasStaminaToProcreate()
     {
-        if (8 <= staminaLevel)
+        if (7 <= staminaLevel)
             return true;
         else
             return false;
@@ -360,7 +358,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
     {
         if (home)
         {
-            return home.CompareTag("HouseNotBuiltAvailable") || home.CompareTag("HouseNotBuiltFull");
+            return (home.CompareTag("HouseNotBuiltAvailable") || home.CompareTag("HouseNotBuiltFull"));
         }
         else
         {
