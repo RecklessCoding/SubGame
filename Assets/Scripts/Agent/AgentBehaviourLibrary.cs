@@ -4,7 +4,7 @@ using UnityEngine;
 public class AgentBehaviourLibrary : MonoBehaviour
 {
     /** Memory of state */
-    private int staminaLevel = 15;
+    public int staminaLevel = 15;
 
     private bool canProcreate = true;
 
@@ -16,7 +16,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     private AgentNavigator agentNavigator;
 
-    public int PROCREATE_CHANCE = 15;
+    public int PROCREATE_CHANCE = 10;
 
     public bool isHome;
 
@@ -132,6 +132,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void StayHome()
     {
         isHome = true;
+
         agentNavigator.StopWalking();
         isGoingToProcreate = false;
     }
@@ -172,17 +173,17 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void GoToBridge()
     {
         isHome = false;
+        isBuildingBridge = true;
 
         agentNavigator.GoToUnfinishedBridge();
-        isBuildingBridge = true;
     }
 
     internal void GoToRock()
     {
         isHome = false;
+        isGatheringRock = true;
 
         agentNavigator.GoToRocks();
-        isGatheringRock = true;
     }
 
     internal void GatherRock()
@@ -196,6 +197,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void BuildBridge()
     {
         isHome = false;
+        hasRock = false;
 
         agentNavigator.StopWalking();
         IsBuildingBridge = false;
@@ -204,7 +206,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void BuildHouse()
     {
         isHome = true;
-
+        hasRock = false;
         agentNavigator.StopWalking();
         IsBuildingHouses = false;
     }
@@ -356,7 +358,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal bool HasHomeNotBuilt()
     {
-        if (home)
+        if (home != null)
         {
             return (home.CompareTag("HouseNotBuiltAvailable") || home.CompareTag("HouseNotBuiltFull"));
         }

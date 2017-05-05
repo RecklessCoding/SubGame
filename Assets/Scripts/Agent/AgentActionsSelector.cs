@@ -69,6 +69,8 @@ public class AgentActionsSelector : MonoBehaviour
             agentBehaviours = gameObject.GetComponent<AgentBehaviourLibrary>();
         }
 
+        if (timeDistribution = null)
+            timeDistribution = gameObject.transform.parent.GetComponent("TimeDistribution") as TimeDistribution;
     }
 
     void OnTriggerEnter(Collider collidedObject)
@@ -80,7 +82,10 @@ public class AgentActionsSelector : MonoBehaviour
             {
                 if (collidedObject.gameObject.Equals(agentBehaviours.Home) && isNight)
                 {
-                    canBeEaten = false;
+                    if (!agentBehaviours.HasHomeNotBuilt())
+                        canBeEaten = false;
+                    else
+                        canBeEaten = true;
                     agentBehaviours.StayHome();
                 }
 
@@ -108,20 +113,31 @@ public class AgentActionsSelector : MonoBehaviour
         }
     }
 
+
     void OnTriggerStay(Collider other)
     {
-        if (agentBehaviours.home != null)
+        if (agentBehaviours.home != null && !agentBehaviours.isHome)
+        {
             if (other.gameObject.Equals(agentBehaviours.Home) && isNight)
             {
-                canBeEaten = false;
+                if (!agentBehaviours.HasHomeNotBuilt())
+                    canBeEaten = false;
+                else
+                    canBeEaten = true;
+                agentBehaviours.isHome = true;
+                agentBehaviours.IsGoingHome = false;
                 agentBehaviours.StayHome();
             }
             else if (other.gameObject.Equals(agentBehaviours.Home) && agentBehaviours.IsGoingHome)
             {
-                canBeEaten = false;
-                CGotHome();
+                if (!agentBehaviours.HasHomeNotBuilt())
+                    canBeEaten = false;
+                else
+                    canBeEaten = true; CGotHome();
             }
+        }
     }
+
 
     internal void IsNight()
     {
@@ -308,16 +324,16 @@ public class AgentActionsSelector : MonoBehaviour
             {
                 agentBehaviours.BuildHouse();
             }
-            else
-            {
-                CHomeBuilding();
-            }
         }
         else
         {
             if (agentBehaviours.IsGoingToProcreate)
             {
                 agentBehaviours.Procreate();
+                agentBehaviours.StayHome();
+            }
+            else
+            {
                 agentBehaviours.StayHome();
             }
         }

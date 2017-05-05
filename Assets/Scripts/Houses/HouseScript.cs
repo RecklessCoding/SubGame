@@ -9,7 +9,7 @@ public class HouseScript : MonoBehaviour
 
     private int rocksNeeded = 11;
 
-    private int stage = 0;
+    public int stage = 0;
 
     private int timeToDetarorate = 500;
 

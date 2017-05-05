@@ -101,7 +101,7 @@ public class ForestFood : MonoBehaviour
         Vector3 pos = GetRandomPos();
 
         GameObject food = Instantiate(foodObjectTemplate, pos, Quaternion.Euler(90, 0, 0)) as GameObject;
-        food.transform.SetParent(gameObject.transform.parent.GetChild(2).transform);
+        food.transform.SetParent(gameObject.transform);
 
         currentFoodLevel++;
 

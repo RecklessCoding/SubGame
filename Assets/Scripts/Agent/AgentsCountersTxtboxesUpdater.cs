@@ -82,7 +82,7 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
 
     internal void EndGame()
     {
-        ScoreBoardPanel.transform.parent.gameObject.SetActive(true);
+        ScoreBoardPanel.transform.parent.gameObject.SetActive(true); 
         ScoreBoardPanel.SetActive(true);
     }
 }
