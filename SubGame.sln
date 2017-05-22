@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubGame", "SubGame.csproj", "{36FE3949-428B-2BA1-72F0-582675806682}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubGame.Editor", "SubGame.Editor.csproj", "{D4A979FD-46DB-053E-1B73-1EA38C12AE15}"

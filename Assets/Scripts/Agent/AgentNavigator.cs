@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class AgentNavigator : MonoBehaviour
 {
-    private UnityEngine.AI.NavMeshAgent agentNavMesh;
+    private NavMeshAgent agentNavMesh;
 
     private Animator anim;
 

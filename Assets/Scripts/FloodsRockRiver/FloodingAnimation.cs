@@ -25,17 +25,17 @@ public class FloodingAnimation : MonoBehaviour {
     {
         transform.GetChild(1).gameObject.SetActive(true);
         transform.GetChild(0).gameObject.SetActive(false);
-        yield return new WaitForSeconds(2f);   //Wait
-        transform.GetChild(2).gameObject.SetActive(true);
-        transform.GetChild(0).gameObject.SetActive(false);
-        transform.GetChild(1).gameObject.SetActive(false);
+     //   yield return new WaitForSeconds(2f);   //Wait
+        //transform.GetChild(2).gameObject.SetActive(true);
+       // transform.GetChild(0).gameObject.SetActive(false);
+      //  transform.GetChild(1).gameObject.SetActive(false);
         yield return new WaitForSeconds(2f);   //Wait
         transform.GetChild(1).gameObject.SetActive(true);
         transform.GetChild(0).gameObject.SetActive(false);
-        transform.GetChild(2).gameObject.SetActive(false);
+     //   transform.GetChild(2).gameObject.SetActive(false);
         yield return new WaitForSeconds(2f);   //Wait
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(1).gameObject.SetActive(false);
-        transform.GetChild(2).gameObject.SetActive(false);
+      //  transform.GetChild(2).gameObject.SetActive(false);
     }
 }

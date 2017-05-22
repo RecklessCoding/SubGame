@@ -8,7 +8,7 @@ public class AgentActionsSelector : MonoBehaviour
 
     private int dateBorn = 0;
 
-    private int maxLife = 0;
+    public int maxLife = 0;
 
     private GameObject agentsManager;
 
@@ -133,7 +133,8 @@ public class AgentActionsSelector : MonoBehaviour
                 if (!agentBehaviours.HasHomeNotBuilt())
                     canBeEaten = false;
                 else
-                    canBeEaten = true; CGotHome();
+                    canBeEaten = true;
+                CGotHome();
             }
         }
     }
@@ -179,10 +180,9 @@ public class AgentActionsSelector : MonoBehaviour
     {
         if (agentBehaviours.IsStarving())
         {
-            agentBehaviours.GoToFood();
+            CEatFood();
         }
-
-        if (isNight)
+        else if (isNight)
         {
             CHomeBuilding();
         }
@@ -261,7 +261,7 @@ public class AgentActionsSelector : MonoBehaviour
                         break;
                     }
                 case 3:
-                    if (timeDistribution.ProcreationTime > 0)
+                    if (timeDistribution.ProcreationTime >= 1)
                     {
                         nextWorkUpdate = UpdateTime(timeDistribution.ProcreationTime);
                         break;
@@ -272,7 +272,8 @@ public class AgentActionsSelector : MonoBehaviour
                         break;
                     }
                 case 4:
-                    worksIndex = Random.Range(-2, 3) + 1;
+                    worksIndex = Random.Range(-2, 2) + 1;
+                    ChangeWorkIndex();
                     break;
             }
         }
@@ -437,6 +438,15 @@ public class AgentActionsSelector : MonoBehaviour
         }
     }
 
+    internal void GotDrowned()
+    {
+
+        AgentsDeathsHandler deathsHandler = transform.parent.gameObject.GetComponent("AgentsDeathsHandler") as AgentsDeathsHandler;
+        deathsHandler.AgentWasDrowned(timeDistribution.DaysPassed - dateBorn);
+
+        KillItself();
+
+    }
     private void KillItself()
     {
         if (agentBehaviours.Home)
@@ -452,7 +462,7 @@ public class AgentActionsSelector : MonoBehaviour
     {
         int timeInDay = Mathf.FloorToInt(timeDistribution.TimeInDay);
 
-        maxLife = Random.Range(timeInDay * 15, timeInDay * 45);
+        maxLife = Random.Range(timeInDay * 1, timeInDay * 45);
     }
 
     private void FindHouse()

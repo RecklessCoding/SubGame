@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AgentsDeathsHandler : MonoBehaviour
 {
+    private int drownedCount = 0;
+
     private int eatenCount = 0;
 
     private int starvedCount = 0;
@@ -36,6 +38,14 @@ public class AgentsDeathsHandler : MonoBehaviour
         totalDaysAgentsLived = totalDaysAgentsLived + daysAgentLived;
         eatenCount = eatenCount + 1;
     }
+
+
+    internal void AgentWasDrowned(float daysAgentLived)
+    {
+        totalDaysAgentsLived = totalDaysAgentsLived + daysAgentLived;
+        drownedCount = drownedCount + 1;
+    }
+
 
     internal void AgentStaved(float daysAgentLived)
     {

@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+﻿using DigitalRuby.RainMaker;
+using UnityEngine;
 
 public class FloodingManager : MonoBehaviour
 {
+    public GameObject rainManager;
+
     public GameObject lighting;
+
+    public GameObject agentManager;
 
     private int nextFlood = 750;
 
@@ -14,9 +19,13 @@ public class FloodingManager : MonoBehaviour
 
     private FloodingAnimation animation;
 
+    private RainScript2D rain;
+
     void Start()
     {
         animation = river.GetComponent("FloodingAnimation") as FloodingAnimation;
+
+        rain = rainManager.GetComponent<RainScript2D>();
     }
 
     // Update is called once per frame
@@ -32,14 +41,29 @@ public class FloodingManager : MonoBehaviour
 
     private void FloodRiver()
     {
-        if ((Time.time >= nextFlood - 10))
+        if ((Time.time >= nextFlood - 120))
         {
-            lighting.SetActive(true);
+            rain.RainIntensity = 1;
+        }
+
+        if ((Time.time >= nextFlood - 60))
+        {
+            rain.RainIntensity = 2;
+        }
+
+        if ((Time.time >= nextFlood - 30))
+        {
+            rain.RainIntensity = 3;
+        }
+
+        if ((Time.time >= nextFlood - 15))
+        {
+            rain.RainIntensity = 5;
         }
 
         if ((Time.time >= nextFlood - 5))
         {
-            lighting.SetActive(false);
+            rain.RainIntensity = 7;
         }
 
 
@@ -47,6 +71,14 @@ public class FloodingManager : MonoBehaviour
         {
             nextFlood = Mathf.FloorToInt(Time.time) + FLOOD_TIMER - (timesInvoked * 5);
             animation.startAnimation();
+
+            for (int i = 0; i < agentManager.transform.GetChildCount(); i++)
+            {
+                if(isAgentOnRiver(agentManager.transform.GetChild(i).transform.position))
+                {
+                    agentManager.transform.GetChild(i).GetComponent<AgentActionsSelector>().GotDrowned();
+                }
+            }
 
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -63,7 +95,26 @@ public class FloodingManager : MonoBehaviour
                 nextFlood = Mathf.FloorToInt(Time.time) + FLOOD_TIMER;
             }
 
-
+            rain.RainIntensity = 0;
         }
+    }
+
+    private bool isAgentOnRiver(Vector3 pos, float radius = 0.2f)
+    {
+        Collider[] colliders = Physics.OverlapSphere(pos, radius);
+
+        Debug.DrawLine(pos, pos + new Vector3(radius,radius, radius));
+
+        foreach (Collider collider in colliders)
+        {
+            GameObject go = collider.gameObject;
+
+            if (go.GetInstanceID().Equals(river.GetInstanceID()))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

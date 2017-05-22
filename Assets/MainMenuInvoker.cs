@@ -14,15 +14,11 @@ public class MainMenuInvoker : MonoBehaviour
     public GameObject resumeButtom2;
     public GameObject helpText;
 
+    public GameObject background;
+
     public bool isPaused = false;
 
     private float lastTimescale = 0;
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
@@ -31,11 +27,15 @@ public class MainMenuInvoker : MonoBehaviour
         {
             if (isPaused)
             {
+                Application.targetFrameRate = 30;
+
                 ResumeGame();
                 HideMenu();
             }
             else
-            {      
+            {
+                Application.targetFrameRate = 45;
+
                 PauseGame();
                 ShowMenu();
             }
@@ -55,6 +55,8 @@ public class MainMenuInvoker : MonoBehaviour
         helpButton.SetActive(true);
         resumeButtom.SetActive(true);
         exitButton.SetActive(true);
+        background.SetActive(true);
+
     }
 
     private void ResumeGame()
@@ -72,6 +74,7 @@ public class MainMenuInvoker : MonoBehaviour
         resumeButtom2.SetActive(false);
         exitButton.SetActive(false);
         helpText.SetActive(false);
+        background.SetActive(false);
     }
 
     public void OnRestartButtonClick()
@@ -98,6 +101,8 @@ public class MainMenuInvoker : MonoBehaviour
         resumeButtom2.SetActive(true);
         goBackButtom.SetActive(true);
         helpText.SetActive(true);
+        background.SetActive(true);
+
     }
 
     public void OnHelpGoBackButtonClick()

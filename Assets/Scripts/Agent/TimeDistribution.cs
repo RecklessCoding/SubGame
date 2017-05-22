@@ -146,6 +146,8 @@ public class TimeDistribution : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Application.targetFrameRate = 30;
+
         AllocateDayTime();
 
         TimeDistributionUpdated();
@@ -240,12 +242,38 @@ public class TimeDistribution : MonoBehaviour
         }
         else
         {
-            foodTime = newValue;
-            bridgesTime = UpdateTimeAllocation(bridgesTime, change);
-            housesTime = UpdateTimeAllocation(housesTime, change);
-            procreationTime = UpdateTimeAllocation(procreationTime, change);
+            if (change <= 0)
+            {
+                if ((bridgesTime == 0 && housesTime == 0) ^ (bridgesTime == 0 && procreationTime == 0) ^ (procreationTime == 0 && housesTime == 0))
+                {
+                    foodTime = newValue;
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 1);
+                    housesTime = UpdateTimeAllocation(housesTime, change, 1);
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 1);
+                }
+                else if ((bridgesTime == 0 ^ housesTime == 0) ^ procreationTime == 0)
+                {
+                    foodTime = newValue;
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 2);
+                    housesTime = UpdateTimeAllocation(housesTime, change, 2);
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 2);
+                }
+                else
+                {
+                    foodTime = newValue;
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 3);
+                    housesTime = UpdateTimeAllocation(housesTime, change, 3);
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 3);
+                }
+            }
+            else
+            {
+                foodTime = newValue;
+                bridgesTime = UpdateTimeAllocation(bridgesTime, change, 3);
+                housesTime = UpdateTimeAllocation(housesTime, change, 3);
+                procreationTime = UpdateTimeAllocation(procreationTime, change, 3);
+            }
         }
-
         TimeDistributionUpdated();
     }
 
@@ -262,12 +290,38 @@ public class TimeDistribution : MonoBehaviour
         }
         else
         {
-            foodTime = UpdateTimeAllocation(foodTime, change);
-            bridgesTime = newValue;
-            housesTime = UpdateTimeAllocation(housesTime, change);
-            procreationTime = UpdateTimeAllocation(procreationTime, change);
+            if (change <= 0)
+            {
+                if ((foodTime == 0 && housesTime == 0) ^ (foodTime == 0 && procreationTime == 0) ^ (procreationTime == 0 && housesTime == 0))
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 1);
+                    bridgesTime = newValue;
+                    housesTime = UpdateTimeAllocation(housesTime, change, 1);
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 1);
+                }
+                else if ((foodTime == 0 ^ housesTime == 0) ^ procreationTime == 0)
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 2);
+                    bridgesTime = newValue;
+                    housesTime = UpdateTimeAllocation(housesTime, change, 2);
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 2);
+                }
+                else
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 3);
+                    bridgesTime = newValue;
+                    housesTime = UpdateTimeAllocation(housesTime, change, 3);
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 3);
+                }
+            }
+            else
+            {
+                foodTime = UpdateTimeAllocation(foodTime, change, 3);
+                bridgesTime = newValue;
+                housesTime = UpdateTimeAllocation(housesTime, change, 3);
+                procreationTime = UpdateTimeAllocation(procreationTime, change, 3);
+            }
         }
-
         TimeDistributionUpdated();
     }
 
@@ -284,10 +338,37 @@ public class TimeDistribution : MonoBehaviour
         }
         else
         {
-            foodTime = UpdateTimeAllocation(foodTime, change);
-            bridgesTime = UpdateTimeAllocation(bridgesTime, change);
-            housesTime = newValue;
-            procreationTime = UpdateTimeAllocation(procreationTime, change);
+            if (change <= 0)
+            {
+                if ((foodTime == 0 && bridgesTime == 0) ^ (foodTime == 0 && procreationTime == 0) ^ (procreationTime == 0 && bridgesTime == 0))
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 1);
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 1);
+                    housesTime = newValue;
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 1);
+                }
+                else if ((foodTime == 0 ^ bridgesTime == 0) ^ procreationTime == 0)
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 2);
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 2);
+                    housesTime = newValue;
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 2);
+                }
+                else
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 3);
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 3);
+                    housesTime = newValue;
+                    procreationTime = UpdateTimeAllocation(procreationTime, change, 3);
+                }
+            }
+            else
+            {
+                foodTime = UpdateTimeAllocation(foodTime, change, 3);
+                bridgesTime = UpdateTimeAllocation(bridgesTime, change, 3);
+                housesTime = newValue;
+                procreationTime = UpdateTimeAllocation(procreationTime, change, 3);
+            }
         }
 
         TimeDistributionUpdated();
@@ -306,10 +387,37 @@ public class TimeDistribution : MonoBehaviour
         }
         else
         {
-            foodTime = UpdateTimeAllocation(foodTime, change);
-            bridgesTime = UpdateTimeAllocation(bridgesTime, change);
-            housesTime = UpdateTimeAllocation(housesTime, change);
-            procreationTime = newValue;
+            if (change <= 0)
+            {
+                if ((foodTime == 0 && bridgesTime == 0) ^ (foodTime == 0 && procreationTime == 0) ^ (procreationTime == 0 && bridgesTime == 0))
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 1);
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 1);
+                    housesTime = UpdateTimeAllocation(housesTime, change, 1);
+                    procreationTime = newValue;
+                }
+                else if ((foodTime == 0 ^ bridgesTime == 0) ^ procreationTime == 0)
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 2);
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 2);
+                    housesTime = UpdateTimeAllocation(housesTime, change, 2);
+                    procreationTime = newValue;
+                }
+                else
+                {
+                    foodTime = UpdateTimeAllocation(foodTime, change, 3);
+                    bridgesTime = UpdateTimeAllocation(bridgesTime, change, 3);
+                    housesTime = UpdateTimeAllocation(housesTime, change, 3);
+                    procreationTime = newValue;
+                }
+            }
+            else
+            {
+                foodTime = UpdateTimeAllocation(foodTime, change, 3);
+                bridgesTime = UpdateTimeAllocation(bridgesTime, change, 3);
+                housesTime = UpdateTimeAllocation(housesTime, change, 3);
+                procreationTime = newValue;
+            }
         }
 
         TimeDistributionUpdated();
@@ -332,9 +440,9 @@ public class TimeDistribution : MonoBehaviour
         agentsAS.ReStrategise();
     }
 
-    private float UpdateTimeAllocation(float timeTobeUpdated, float change)
+    private float UpdateTimeAllocation(float timeTobeUpdated, float change, float divider)
     {
-        timeTobeUpdated = timeTobeUpdated + (change / 3);
+        timeTobeUpdated = timeTobeUpdated + (change / divider);
 
         if (timeTobeUpdated < 0)
         {
@@ -351,11 +459,6 @@ public class TimeDistribution : MonoBehaviour
 
     private void UpdateSliders()
     {
-        foodSlider.GetComponent<Slider>().maxValue = dayLength;
-        bridgesSlider.GetComponent<Slider>().maxValue = dayLength;
-        housesSlider.GetComponent<Slider>().maxValue = dayLength;
-        procreationSlider.GetComponent<Slider>().maxValue = dayLength;
-
         foodSlider.GetComponent<Slider>().value = foodTime;
         bridgesSlider.GetComponent<Slider>().value = bridgesTime;
         housesSlider.GetComponent<Slider>().value = housesTime;
@@ -377,5 +480,10 @@ public class TimeDistribution : MonoBehaviour
         averageBridgesTime = totalBridgesTime / (numberOfChanges);
         averageHousesTime = totalHousesTime / (numberOfChanges);
         averageProcreationTime = procreationTime / (numberOfChanges);
+
+        foodSlider.GetComponent<Slider>().maxValue = dayLength;
+        bridgesSlider.GetComponent<Slider>().maxValue = dayLength;
+        housesSlider.GetComponent<Slider>().maxValue = dayLength;
+        procreationSlider.GetComponent<Slider>().maxValue = dayLength;
     }
 }

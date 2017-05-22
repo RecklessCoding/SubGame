@@ -21,18 +21,21 @@ public class AgentBehaviourLibrary : MonoBehaviour
     public bool isHome;
 
     private bool isNight = false;
-    private bool isGatheringFood;
-    private bool isGatheringRock;
-    private bool isGoingHome;
-    private bool isBuildingBridge;
-    private bool isBuildingHouses;
-    private bool isGoingToProcreate;
+    private bool isGatheringFood = false;
+    private bool isGatheringRock = false;
+    private bool isGoingHome = false;
+    private bool isBuildingBridge = false;
+    private bool isBuildingHouses = false;
+    private bool isGoingToProcreate = false;
 
     // Use this for initialization
     void Start()
     {
         agentNavigator = gameObject.GetComponent<AgentNavigator>();
         isHome = false;
+        staminaLevel = UnityEngine.Random.Range(5, 22);
+        if (staminaLevel > 15)
+            staminaLevel = 15;
     }
 
     void Awake()
@@ -132,13 +135,14 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void StayHome()
     {
         isHome = true;
-
+    
         agentNavigator.StopWalking();
         isGoingToProcreate = false;
     }
 
     internal void GoToProcreate()
     {
+        Debug.Log("This is called");
         if (canProcreate)
         {
             isGoingToProcreate = true;
@@ -147,6 +151,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void Procreate()
     {
+        isGoingToProcreate = false;
         isHome = true;
         if (home != null)
             home.GetComponent<HouseScript>().UpdateAgentReproduction(canProcreate);
@@ -259,7 +264,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal bool IsStarving()
     {
-        if (staminaLevel <= 2)
+        if (0 < staminaLevel && staminaLevel <= 2)
             return true;
         else
             return false;
