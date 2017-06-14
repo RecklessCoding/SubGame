@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
 public class AgentActionsHandler
 {
@@ -193,7 +191,7 @@ public class AgentActionsHandler
             GoBuildHome();
         }
         else
-        {
+        { 
             FindHouse();
         }
     }

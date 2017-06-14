@@ -23,9 +23,15 @@ public class AgentActionsSelector : MonoBehaviour
     public bool isNight = false;
     public bool canBeEaten = false;
 
+    private int botNumber = 0;
+    private static int numberOfBots = 0;
+
     // Use this for initialization
     void Start()
     {
+        numberOfBots = numberOfBots + 1;
+        botNumber = numberOfBots;
+
         agentsManager = transform.parent.gameObject;
         agentBehaviours = gameObject.GetComponent<AgentBehaviourLibrary>();
 
@@ -47,6 +53,8 @@ public class AgentActionsSelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.rotation = Quaternion.Euler(90, 0, 0);
+
         if (agentBehaviours.Home == null)
         {
             FindHouse();
@@ -139,6 +147,18 @@ public class AgentActionsSelector : MonoBehaviour
         }
     }
 
+    public void MakeSelected()
+    {
+        Debug.Log(botNumber);
+        ABOD3_Bridge.GetInstance().ChangeSelectedBot(botNumber);
+        gameObject.GetComponent<SpriteOutline>().enabled = true;
+    }
+
+    public void MakeUnselected()
+    {
+        ABOD3_Bridge.GetInstance().ChangeSelectedBot(0);
+        gameObject.GetComponent<SpriteOutline>().enabled = false;
+    }
 
     internal void IsNight()
     {
@@ -180,26 +200,35 @@ public class AgentActionsSelector : MonoBehaviour
     {
         if (agentBehaviours.IsStarving())
         {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-Survive", "D");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-EatFood", "DE");
             CEatFood();
         }
         else if (isNight)
         {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-Survive", "D");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-RunHome", "DE");
             CHomeBuilding();
         }
         else
         {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-DailyLife", "D");
             switch (worksIndex)
             {
                 case 0:
+                    ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-EatFood", "DE");
                     CEatFood();
                     break;
                 case 1:
+                    ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-BuildBridges", "DE");
                     agentBehaviours.GoToBridge();
                     break;
                 case 2:
+                    ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-BuildHome", "DE");
                     CHomeBuilding();
                     break;
                 case 3:
+                    ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-Procreate", "DE");
                     CTryToProcreate();
                     break;
             }
