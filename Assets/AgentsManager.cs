@@ -26,6 +26,7 @@ public class AgentsManager : MonoBehaviour
             bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);
             if (hit)
             {
+                Debug.Log("Hit something: " + hitInfo.transform.gameObject.name);
                 if (hitInfo.transform.gameObject.tag == "Agent")
                 {
                     if (agent != null)

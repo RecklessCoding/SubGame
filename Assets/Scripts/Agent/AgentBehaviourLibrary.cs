@@ -28,6 +28,8 @@ public class AgentBehaviourLibrary : MonoBehaviour
     private bool isBuildingHouses = false;
     private bool isGoingToProcreate = false;
 
+    private int botNumber = 0;
+
     // Use this for initialization
     void Start()
     {
@@ -46,6 +48,11 @@ public class AgentBehaviourLibrary : MonoBehaviour
         }
     }
     /** ---- Status Updaters ---- */
+
+    internal void SetBotNumber(int botNumber)
+    {
+        this.botNumber = botNumber;
+    }
 
     internal void GetHungrier()
     {
@@ -96,6 +103,8 @@ public class AgentBehaviourLibrary : MonoBehaviour
     /** -----------ACTIONS----------- */
     internal void GoToFood()
     {
+        ABOD3_Bridge.GetInstance().AletForElement(botNumber, "GoToNearestFood", "A");
+
         isHome = false;
 
         isGatheringFood = true;
@@ -111,6 +120,8 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void EatFood()
     {
+        ABOD3_Bridge.GetInstance().AletForElement(botNumber, "EatFood", "A");
+
         staminaLevel = staminaLevel + 2;
 
         if (staminaLevel > 15)
@@ -126,6 +137,8 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void GoToHome()
     {
+        ABOD3_Bridge.GetInstance().AletForElement(botNumber, "GoHome", "A");
+
         isGoingHome = true;
 
         if (home != null)
@@ -135,14 +148,13 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void StayHome()
     {
         isHome = true;
-    
+
         agentNavigator.StopWalking();
         isGoingToProcreate = false;
     }
 
     internal void GoToProcreate()
     {
-        Debug.Log("This is called");
         if (canProcreate)
         {
             isGoingToProcreate = true;
@@ -151,6 +163,8 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void Procreate()
     {
+        ABOD3_Bridge.GetInstance().AletForElement(botNumber, "C-Procreate", "C");
+
         isGoingToProcreate = false;
         isHome = true;
         if (home != null)
@@ -158,9 +172,11 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
         if ((home.GetComponent<HouseScript>()).CanReproduce())
         {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HaveEnergy", "CE");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "AttemptProcreation", "A");
+
             int dieRoll = UnityEngine.Random.Range(1, 100);
             staminaLevel--;
-
             if (dieRoll < PROCREATE_CHANCE)
             {
                 staminaLevel--;

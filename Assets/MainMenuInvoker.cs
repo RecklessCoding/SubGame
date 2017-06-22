@@ -8,6 +8,7 @@ public class MainMenuInvoker : MonoBehaviour
     public GameObject restartButton;
     public GameObject helpButton;
     public GameObject resumeButtom;
+    public GameObject abod3Button;
     public GameObject exitButton;
 
     public GameObject goBackButtom;
@@ -56,7 +57,7 @@ public class MainMenuInvoker : MonoBehaviour
         resumeButtom.SetActive(true);
         exitButton.SetActive(true);
         background.SetActive(true);
-
+        abod3Button.SetActive(true);
     }
 
     private void ResumeGame()
@@ -75,6 +76,12 @@ public class MainMenuInvoker : MonoBehaviour
         exitButton.SetActive(false);
         helpText.SetActive(false);
         background.SetActive(false);
+        abod3Button.SetActive(false);
+    }
+
+    public void ConnectABOD3()
+    {
+        ABOD3_Bridge.GetInstance().AttemptToConnect();
     }
 
     public void OnRestartButtonClick()

@@ -23,10 +23,10 @@ public class ABOD3_Bridge
 
     private ABOD3_Bridge()
     {
-        Init();
+        AttemptToConnect();
     }
 
-    private void Init()
+    internal void AttemptToConnect()
     {
         try
         {
@@ -46,7 +46,7 @@ public class ABOD3_Bridge
         currentBot = newCurrentBot;
     }
 
-    public void AlertForCondition(string conditionName, int botNumber)
+    internal void AlertForCondition(string conditionName, int botNumber)
     {
         if (streamWriter != null && botNumber == currentBot)
         {
@@ -65,18 +65,8 @@ public class ABOD3_Bridge
 
     internal void AletForElement(int botNumber, string elementName, string elementType)
     {
-        if (streamWriter == null)
-        {
-            Debug.Log("null");
-            Debug.Log(botNumber);
-        }
-
-        if (botNumber == currentBot)
-            Debug.Log("eq");
-
         if (streamWriter != null && botNumber == currentBot)
         {
-            Debug.Log(elementName);
             streamWriter.WriteLine(botNumber.ToString() + "," + elementName + "," + elementType);
         }
     }
