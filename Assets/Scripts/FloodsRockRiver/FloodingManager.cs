@@ -9,7 +9,7 @@ public class FloodingManager : MonoBehaviour
 
     public GameObject agentManager;
 
-    private int nextFlood = 750;
+    private int nextFlood = 1500;
 
     private const int FLOOD_TIMER = 1500;
 
@@ -32,11 +32,6 @@ public class FloodingManager : MonoBehaviour
     void Update()
     {
         FloodRiver();
-    }
-
-    internal void ChangeSpeed(float factor)
-    {
-        //nextFlood = nextFlood * factor
     }
 
     private void FloodRiver()
@@ -99,7 +94,7 @@ public class FloodingManager : MonoBehaviour
         }
     }
 
-    private bool isAgentOnRiver(Vector3 pos, float radius = 0.2f)
+    private bool isAgentOnRiver(Vector3 pos, float radius = 0.1f)
     {
         Collider[] colliders = Physics.OverlapSphere(pos, radius);
 

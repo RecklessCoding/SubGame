@@ -35,6 +35,19 @@ public class SavePlayer : MonoBehaviour
         playerNameTxtbox.transform.parent.gameObject.SetActive(false);
 
         Time.timeScale = 1;
+
+        if(toggleDecay.GetComponent<Toggle>().isOn)
+        {
+            PlayerPrefs.SetInt("Decay", 1);
+        }
+        if (toggleImmigration.GetComponent<Toggle>().isOn)
+        {
+            PlayerPrefs.SetInt("Immigration", 1);
+        }
+        if (toggleFloods.GetComponent<Toggle>().isOn)
+        {
+            floodManager.GetComponent<FloodingManager>().enabled = true;
+        }
     }
 
     public void OnFloodToggleChange(bool value)

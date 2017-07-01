@@ -79,6 +79,10 @@ public class AgentNavigator : MonoBehaviour
                 return null;
             }
         }
+        else
+        {
+            return null;
+        }
 
         GoToTarget(target);
 
@@ -88,6 +92,13 @@ public class AgentNavigator : MonoBehaviour
     internal Transform GoToUnfinishedBridge()
     {
         GameObject[] bridges = GameObject.FindGameObjectsWithTag("BridgeNotAvailable");
+
+        return GoToTarget((FindNearestObject(bridges)));
+    }
+
+    internal Transform GoToBridges()
+    {
+        GameObject[] bridges = GameObject.FindGameObjectsWithTag("BridgeAvailable");
 
         return GoToTarget((FindNearestObject(bridges)));
     }

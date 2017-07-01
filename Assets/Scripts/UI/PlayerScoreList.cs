@@ -48,9 +48,10 @@ public class PlayerScoreList : MonoBehaviour {
             go.transform.Find("DeathsEaten").GetComponent<Text>().text = scoreManager.GetScore(name, "DeathsEaten").ToString();
             go.transform.Find("DeathsStarved").GetComponent<Text>().text = scoreManager.GetScore(name, "DeathsStarved").ToString();
             go.transform.Find ("TotalDeaths").GetComponent<Text>().text = scoreManager.GetScore(name, "TotalDeaths").ToString();
-            go.transform.Find("AverageFood").GetComponent<Text>().text = scoreManager.GetScore(name, "AverageFood").ToString();
-            go.transform.Find("AverageBridges").GetComponent<Text>().text = scoreManager.GetScore(name, "AverageBridges").ToString();
-            go.transform.Find("AverageHouses").GetComponent<Text>().text = scoreManager.GetScore(name, "AverageHouses").ToString();
+            go.transform.Find("AverageFood").GetComponent<Text>().text = scoreManager.GetScore(name, "AverageFood").ToString("0.##"); 
+            go.transform.Find("AverageBridges").GetComponent<Text>().text = scoreManager.GetScore(name, "AverageBridges").ToString("0.##");
+            go.transform.Find("AverageHouses").GetComponent<Text>().text = scoreManager.GetScore(name, "AverageHouses").ToString("0.##");
+            go.transform.Find("AverageProcreation").GetComponent<Text>().text = scoreManager.GetScore(name, "AverageProcreation").ToString("0.##");
 
 
         }

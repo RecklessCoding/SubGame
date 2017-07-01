@@ -75,13 +75,21 @@ public class AgentsCountersTxtboxesUpdater : MonoBehaviour
             + deathsHandler.HowManyAgentsWereStarved;
 
         totalPopulation = totalPopulation + totalAgentsDied;
+    }
+
+    internal void UpdateScoreManager()
+    {
+        timeDistribution.UpdateAverages();
+
 
         scoreManager.SetScore(PlayerPrefs.GetString("UserName"), Mathf.FloorToInt(totalPopulation), agentsCreator.HowManyAgentsWereBorned, new int[] { deathsHandler.HowManyAgentsDied, deathsHandler.HowManyAgentsWereEaten, deathsHandler.HowManyAgentsWereStarved, Mathf.FloorToInt(totalPopulation) },
-            new float[] { timeDistribution.AverageFoodTime, timeDistribution.AverageBridgesTime, timeDistribution.AverageHouseTime });
+    new float[] { timeDistribution.AverageFoodTime, timeDistribution.AverageBridgesTime, timeDistribution.AverageHouseTime, timeDistribution.AverageProcreationTime });
     }
 
     internal void EndGame()
     {
+        UpdateScoreManager();
+
         ScoreBoardPanel.transform.parent.gameObject.SetActive(true); 
         ScoreBoardPanel.SetActive(true);
     }

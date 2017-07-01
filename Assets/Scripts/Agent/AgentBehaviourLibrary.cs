@@ -61,7 +61,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     internal void BecomeFull()
     {
-        GetComponent<SpriteRenderer>().color = new Color(0, 0, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(0, 0.5f, 0, 1);
 
         if (home != null)
             home.GetComponent<HouseScript>().UpdateAgentReproduction(true);
@@ -70,18 +70,18 @@ public class AgentBehaviourLibrary : MonoBehaviour
     internal void BecomeAbleToProcreate()
     {
         canProcreate = true;
-        GetComponent<SpriteRenderer>().color = new Color(0, 1, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(0, 1, 0, 1);
     }
 
     internal void BecomeUnableToProcreate()
     {
         canProcreate = false;
-        GetComponent<SpriteRenderer>().color = new Color(0.5f, 1, 0.5f, 1);
+        GetComponent<SpriteRenderer>().color = new Color(1, 0.92f, 0.016f, 1);
     }
 
     internal void BecomeHungry()
     {
-        GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 1);
+        GetComponent<SpriteRenderer>().color = new Color(1, 0.75f, 0.01f, 1);
 
         if (home != null)
             home.GetComponent<HouseScript>().UpdateAgentReproduction(false);
@@ -106,7 +106,6 @@ public class AgentBehaviourLibrary : MonoBehaviour
         ABOD3_Bridge.GetInstance().AletForElement(botNumber, "GoToNearestFood", "A");
 
         isHome = false;
-
         isGatheringFood = true;
         agentNavigator.GoToFood();
     }
@@ -172,7 +171,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
         if ((home.GetComponent<HouseScript>()).CanReproduce())
         {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HaveEnergy", "CE");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HasEnoughEnergy", "CE");
             ABOD3_Bridge.GetInstance().AletForElement(botNumber, "AttemptProcreation", "A");
 
             int dieRoll = UnityEngine.Random.Range(1, 100);
@@ -185,6 +184,11 @@ public class AgentBehaviourLibrary : MonoBehaviour
                 agentsCreator.BornAgent(transform.position);
             }
         }
+        else
+        {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-NotEnoughEnergy", "CE");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "StayHome", "A");
+        }
 
 
         if (home != null)
@@ -196,11 +200,18 @@ public class AgentBehaviourLibrary : MonoBehaviour
         isHome = false;
         isBuildingBridge = true;
 
-        agentNavigator.GoToUnfinishedBridge();
+        if (agentNavigator.GoToUnfinishedBridge() == null)
+        {
+            isBuildingBridge = false;
+
+            agentNavigator.GoToBridges();
+        }
     }
 
     internal void GoToRock()
     {
+        ABOD3_Bridge.GetInstance().AletForElement(botNumber, "GoGetRock", "A");
+
         isHome = false;
         isGatheringRock = true;
 

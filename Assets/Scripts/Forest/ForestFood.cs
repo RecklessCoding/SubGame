@@ -7,7 +7,7 @@ public class ForestFood : MonoBehaviour
 
     public GameObject agentsManager;
 
-    public float restockTime = 500;
+    private float restockTime = 900;
 
     public int maxFood;
 

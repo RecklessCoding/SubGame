@@ -8,7 +8,10 @@ public class MainMenuInvoker : MonoBehaviour
     public GameObject restartButton;
     public GameObject helpButton;
     public GameObject resumeButtom;
+
     public GameObject abod3Button;
+    public GameObject abod3text;
+
     public GameObject exitButton;
 
     public GameObject goBackButtom;
@@ -77,11 +80,21 @@ public class MainMenuInvoker : MonoBehaviour
         helpText.SetActive(false);
         background.SetActive(false);
         abod3Button.SetActive(false);
+        abod3text.SetActive(false);
     }
 
     public void ConnectABOD3()
     {
-        ABOD3_Bridge.GetInstance().AttemptToConnect();
+        if (ABOD3_Bridge.GetInstance().AttemptToConnect())
+        {
+            abod3text.SetActive(true);
+            abod3text.GetComponent<TMPro.TextMeshProUGUI>().text = "Connection established to ABOD3 on port 3000";
+        }
+        else
+        {
+            abod3text.SetActive(true);
+            abod3text.GetComponent<TMPro.TextMeshProUGUI>().text = "Connection could not be established";
+        }
     }
 
     public void OnRestartButtonClick()

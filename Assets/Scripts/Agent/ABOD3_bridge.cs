@@ -26,7 +26,7 @@ public class ABOD3_Bridge
         AttemptToConnect();
     }
 
-    internal void AttemptToConnect()
+    internal bool AttemptToConnect()
     {
         try
         {
@@ -35,9 +35,12 @@ public class ABOD3_Bridge
             Stream stream = client.GetStream();
             streamWriter = new StreamWriter(stream);
             streamWriter.AutoFlush = true;
+
+            return true;
         }
         catch
         {
+            return false;
         }
     }
 

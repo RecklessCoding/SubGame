@@ -30,7 +30,7 @@ public class PredatorsManager : MonoBehaviour
 
     private IEnumerator KillAgents()
     {
-        yield return new WaitForSeconds(60f);
+        yield return new WaitForSeconds(75f);
         AgentActionsSelector[] agents = agentManager.transform.GetComponentsInChildren<AgentActionsSelector>();
          int killOrNot = Random.Range(0, 100);
 

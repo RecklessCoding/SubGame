@@ -39,7 +39,7 @@ public class AgentActionsSelector : MonoBehaviour
         dateBorn = timeDistribution.DaysPassed;
 
         nextStaminaUpdate = timeDistribution.TimeInDay;
-        staminaUpdateTime = timeDistribution.TimeInDay;
+        staminaUpdateTime = timeDistribution.TimeInDay / 1.5f;
 
         SetRandomAge();
         defaultColor = new Color(0, 1, 1, 1);
@@ -109,6 +109,8 @@ public class AgentActionsSelector : MonoBehaviour
                 }
                 else if (collidedObject.gameObject.tag.Equals("BridgeNotAvailable") && agentBehaviours.IsBuildingBridge)
                 {
+                    ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-ReadyToBuild", "DE");
+                    ABOD3_Bridge.GetInstance().AletForElement(botNumber, "BuildBridge", "A");
                     agentBehaviours.BuildBridge();
                 }
                 else if (collidedObject.gameObject.Equals(agentBehaviours.Home) && agentBehaviours.IsGoingHome)
@@ -199,17 +201,20 @@ public class AgentActionsSelector : MonoBehaviour
 
     private void ActionSelection()
     {
-        if (agentBehaviours.IsStarving())
+        if (isNight)
+        {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-Survive", "D");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-IsNight", "DE");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "RunHome", "A");
+
+            CHomeBuilding();
+        }
+        else if (agentBehaviours.IsStarving())
         {
             ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-Survive", "D");
             ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-EatFood", "DE");
-            CEatFood();
-        }
-        else if (isNight)
-        {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-Survive", "D");
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-RunHome", "DE");
-            CHomeBuilding();
+
+            CEatFood(true);
         }
         else
         {
@@ -218,11 +223,11 @@ public class AgentActionsSelector : MonoBehaviour
             {
                 case 0:
                     ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-EatFood", "D");
-                    CEatFood();
+                    CEatFood(false);
                     break;
                 case 1:
                     ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-BuildBridges", "D");
-                    agentBehaviours.GoToBridge();
+                    CBuildBridge();
                     break;
                 case 2:
                     ABOD3_Bridge.GetInstance().AletForElement(botNumber, "D-BuildHome", "D");
@@ -240,15 +245,19 @@ public class AgentActionsSelector : MonoBehaviour
     {
         if (agentBehaviours.HasHomeNotBuilt())
         {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-HomeNotBuilt", "DE");
             CHomeBuilding();
         }
         else
         {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-GoHome", "DE");
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-HasHome", "DE");
             agentBehaviours.GoToProcreate();
             agentBehaviours.GoToHome();
         }
+    }
+
+    public void ForceWorkChange()
+    {
+        nextWorkUpdate = -1;
     }
 
     private void ChangeWorkIndex()
@@ -330,17 +339,23 @@ public class AgentActionsSelector : MonoBehaviour
     {
         if (agentBehaviours.HasHomeNotBuilt())
         {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-DoesNotHaveHome", "DE");
+
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "C-BuildHome", "C");
             if (agentBehaviours.HasRock())
             {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HasRock", "CE");
                 agentBehaviours.GoToHome();
             }
             else
             {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HasNoRocks", "CE");
                 agentBehaviours.GoToRock();
             }
         }
         else
         {
+            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-HasHome", "DE");
             agentBehaviours.GoToHome();
         }
     }
@@ -355,6 +370,8 @@ public class AgentActionsSelector : MonoBehaviour
         {
             if (agentBehaviours.HasRock())
             {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-ReadyToBuild", "CE");
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "BuildHouse", "A");
                 agentBehaviours.BuildHouse();
             }
         }
@@ -363,7 +380,7 @@ public class AgentActionsSelector : MonoBehaviour
             if (agentBehaviours.IsGoingToProcreate)
             {
                 ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-IsHome", "DE");
-
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "C-Procreate", "C");
                 agentBehaviours.Procreate();
                 agentBehaviours.StayHome();
             }
@@ -374,34 +391,50 @@ public class AgentActionsSelector : MonoBehaviour
         }
     }
 
-    private void CEatFood()
+    private void CEatFood(bool isEmergency)
     {
 
         if (agentBehaviours.HasFood())
         {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-GotFood", "CE");
+            if (isEmergency)
+            {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HasFood", "CE");
+            }
+            else
+            {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-HasFood", "DE");
+            }
             agentBehaviours.EatFood();
         }
         else
         {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-GoGetFood", "CE");
+            if (isEmergency)
+            {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-GoGetFood", "CE");
+            }
+            else
+            {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-GoGetFood", "DE");
+            }
             agentBehaviours.GoToFood();
         }
     }
 
     private void CBuildBridge()
     {
-        if (agentBehaviours.HasRock())
-        {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HasRocks", "CE");
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "AP-BuildBridge", "AP");
-            agentBehaviours.GoToBridge();
-        }
-        else
-        {
-            ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HasNoRocks", "CE");
-            agentBehaviours.GoToRock();
-        }
+        if (!isNight)
+            if (agentBehaviours.HasRock())
+            {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-HasRocks", "DE");
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "GoNearestBridgeSite", "A");
+                agentBehaviours.GoToBridge();
+            }
+            else
+            {
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-HasNoRocks", "DE");
+                ABOD3_Bridge.GetInstance().AletForElement(botNumber, "GoGetRock", "A");
+                agentBehaviours.GoToRock();
+            }
     }
 
     private void CBuildHouse()

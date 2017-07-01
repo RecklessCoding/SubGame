@@ -8,9 +8,9 @@ public class BridgeScript : MonoBehaviour
 
     public int stage = 0;
 
-    private int timeToDetarorate = 240;
+    private int timeToDetarorate = 900;
 
-    private const int DETARORATION_TIMER = 120;
+    private const int DETARORATION_TIMER = 900;
 
     private bool isDecayOn = true;
 
@@ -44,7 +44,6 @@ public class BridgeScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Agent")
         {
-
             Build(other.gameObject);
         }
     }
@@ -105,7 +104,7 @@ public class BridgeScript : MonoBehaviour
             stage = stage - 1;
             transform.GetChild(stage).gameObject.SetActive(true);
 
-            Destroy();
+            gameObject.tag = "BridgeNotAvailable";
         }
     }
 

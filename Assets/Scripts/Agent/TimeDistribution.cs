@@ -25,17 +25,17 @@ public class TimeDistribution : MonoBehaviour
 
     public GameObject nightObject;
 
-    private float timeInDay = 270;
+    private float timeInDay = 290;
 
-    private float foodTime = 90;
+    private float foodTime = 80;
 
     private float bridgesTime = 0;
 
-    private float housesTime = 90;
+    private float housesTime = 120;
 
     private float procreationTime = 0;
 
-    private float dayLength = 180;
+    private float dayLength = 200;
 
     private float nightLength = 90;
 
@@ -63,6 +63,8 @@ public class TimeDistribution : MonoBehaviour
 
     private bool isImmigrationOn = true;
 
+    private bool wereSlidersUsed = false;
+
     internal float AverageFoodTime
     {
         get
@@ -85,6 +87,13 @@ public class TimeDistribution : MonoBehaviour
         }
     }
 
+    internal float AverageProcreationTime
+    {
+        get
+        {
+            return averageProcreationTime;
+        }
+    }
     internal float FoodTime
     {
         get
@@ -164,6 +173,8 @@ public class TimeDistribution : MonoBehaviour
         {
             isImmigrationOn = false;
         }
+
+        UpdateAverages();
     }
 
     void Update()
@@ -203,12 +214,17 @@ public class TimeDistribution : MonoBehaviour
                 daysUntilNextMigrant += 1;
 
                 predatorsManager.GetComponent<PredatorsManager>().setNight(false);
+
+                UpdateAverages();
             }
 
             if (daysUntilNextMigrant >= 10)
             {
+                Debug.Log("immigration?");
+
                 if (isImmigrationOn)
                 {
+                    Debug.Log("immigration");
                     (gameObject.GetComponent("AgentsCreator") as AgentsCreator).MigratePopulation(50);
                 }
 
@@ -222,6 +238,25 @@ public class TimeDistribution : MonoBehaviour
     {
     }
 
+    internal void UpdateAverages()
+    {
+        if (wereSlidersUsed)
+        {
+            totalFoodTime += foodTime;
+            totalBridgesTime += bridgesTime;
+            totalHousesTime += housesTime;
+            totalProcreationTime += procreationTime;
+
+            float totalTime = totalFoodTime + totalBridgesTime + totalHousesTime + totalProcreationTime;
+
+            averageFoodTime = (totalFoodTime / totalTime) * 100;
+            averageBridgesTime = (totalBridgesTime / totalTime) * 100;
+            averageHousesTime = (totalHousesTime / totalTime) * 100;
+            averageProcreationTime = (procreationTime / totalTime) * 100;
+
+            wereSlidersUsed = false;
+        }
+    }
 
     internal void EndGame()
     {
@@ -426,18 +461,24 @@ public class TimeDistribution : MonoBehaviour
     private void AllocateDayTime()
     {
         dayLength = foodTime + bridgesTime + housesTime + procreationTime;
+        timeInDay = nightLength + dayLength;
     }
 
     private void TimeDistributionUpdated()
     {
         UpdateSliders();
-        //AlertActionSelection();
+        AlertActionSelection();
     }
 
     private void AlertActionSelection()
     {
-        AgentsActionSelector agentsAS = gameObject.GetComponent("AgentsActionSelector") as AgentsActionSelector;
-        agentsAS.ReStrategise();
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            AgentActionsSelector agent = transform.GetChild(i).GetComponent("AgentActionsSelector") as AgentActionsSelector;
+            agent.ForceWorkChange();
+
+        }
     }
 
     private float UpdateTimeAllocation(float timeTobeUpdated, float change, float divider)
@@ -469,21 +510,11 @@ public class TimeDistribution : MonoBehaviour
         housesLabel.GetComponent<Text>().text = (housesTime / dayLength * 100).ToString("0.0") + "%";
         procreationLabel.GetComponent<Text>().text = (procreationTime / dayLength * 100).ToString("0.0") + "%";
 
-        totalFoodTime += foodTime;
-        totalBridgesTime += bridgesTime;
-        totalHousesTime += housesTime;
-        totalProcreationTime += procreationTime;
-
-        numberOfChanges++;
-
-        averageFoodTime = totalFoodTime / (numberOfChanges);
-        averageBridgesTime = totalBridgesTime / (numberOfChanges);
-        averageHousesTime = totalHousesTime / (numberOfChanges);
-        averageProcreationTime = procreationTime / (numberOfChanges);
-
         foodSlider.GetComponent<Slider>().maxValue = dayLength;
         bridgesSlider.GetComponent<Slider>().maxValue = dayLength;
         housesSlider.GetComponent<Slider>().maxValue = dayLength;
         procreationSlider.GetComponent<Slider>().maxValue = dayLength;
+
+        wereSlidersUsed = true;
     }
 }

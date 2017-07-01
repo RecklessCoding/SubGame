@@ -72,6 +72,7 @@ public class ScoreManager : MonoBehaviour
         playerScores[username]["AverageFood"] = averages[0];
         playerScores[username]["AverageBridges"] = averages[1];
         playerScores[username]["AverageHouses"] = averages[2];
+        playerScores[username]["AverageProcreation"] = averages[3];
     }
 
 
