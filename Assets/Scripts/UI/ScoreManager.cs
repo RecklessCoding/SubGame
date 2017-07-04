@@ -10,6 +10,8 @@ public class ScoreManager : MonoBehaviour
     //	LIST OF USERS -> A User -> LIST OF SCORES for that user
     //
 
+    Dictionary<string, string> displayNames;
+
     Dictionary<string, Dictionary<string, float>> playerScores;
 
     int changeCounter = 0;
@@ -24,13 +26,25 @@ public class ScoreManager : MonoBehaviour
         if (playerScores != null)
             return;
 
+        displayNames = new Dictionary<string, string>();
         playerScores = new Dictionary<string, Dictionary<string, float>>();
+
+        string displayName = "";
+        for (int i = 0; i < PlayerPrefs.GetInt("saved_total"); i++)
+        {
+            displayName = PlayerPrefs.GetString("UserName" + (i));
+
+            SetScore(displayName+i,displayName, PlayerPrefs.GetInt("TotalPopulation" + i), PlayerPrefs.GetInt("TotalBabies"+i),
+              new int[] { PlayerPrefs.GetInt("DeathsAge" + i), PlayerPrefs.GetInt("DeathsEaten"+ (i)), PlayerPrefs.GetInt("DeathsStarved"+i), PlayerPrefs.GetInt("TotalDeaths"+i) }
+              , new float[] { PlayerPrefs.GetFloat("AverageFood"+i), PlayerPrefs.GetFloat("AverageBridges"+i), PlayerPrefs.GetFloat("AverageHouses" +i), PlayerPrefs.GetFloat("AverageProcreation"+i) });
+        }
     }
 
     public void Reset()
     {
         changeCounter++;
         playerScores = null;
+        PlayerPrefs.DeleteAll();
     }
 
     public float GetScore(string username, string scoreType)
@@ -39,7 +53,6 @@ public class ScoreManager : MonoBehaviour
 
         if (playerScores.ContainsKey(username) == false)
         {
-            // We have no score record at all for this username
             return 0;
         }
 
@@ -48,10 +61,23 @@ public class ScoreManager : MonoBehaviour
             return 0;
         }
 
-        return playerScores[username][scoreType];
+        return playerScores[username][scoreType];       
     }
 
-    public void SetScore(string username, int totalPopulation, int totalBabies, int [] deaths, float[] averages)
+    public string GetName(string username)
+    {
+        Init();
+
+        if (displayNames.ContainsKey(username) == false)
+        {
+            return username;
+        }
+
+        return displayNames[username];
+    }
+
+
+    public void SetScore(string username, string displayName, int totalPopulation, int totalBabies, int[] deaths, float[] averages)
     {
         Init();
 
@@ -62,8 +88,14 @@ public class ScoreManager : MonoBehaviour
             playerScores[username] = new Dictionary<string, float>();
         }
 
+        if (displayNames.ContainsKey(username) == false)
+        {
+            displayNames.Add(username, displayName);
+        }
+
         playerScores[username]["TotalPopulation"] = totalPopulation;
         playerScores[username]["TotalBabies"] = totalBabies;
+
         playerScores[username]["DeathsAge"] = deaths[0];
         playerScores[username]["DeathsEaten"] = deaths[1];
         playerScores[username]["DeathsStarved"] = deaths[2];
@@ -89,7 +121,7 @@ public class ScoreManager : MonoBehaviour
 
         playerScores[username][scoreType] = value;
     }
- 
+
     public string[] GetPlayerNames()
     {
         Init();

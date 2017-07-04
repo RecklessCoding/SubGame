@@ -21,6 +21,9 @@ public class FloodingManager : MonoBehaviour
 
     private RainScript2D rain;
 
+    private bool floodBeforeWritten = false;
+    private bool floodAfterWritten = false;
+
     void Start()
     {
         animation = river.GetComponent("FloodingAnimation") as FloodingAnimation;
@@ -49,6 +52,11 @@ public class FloodingManager : MonoBehaviour
         if ((Time.time >= nextFlood - 30))
         {
             rain.RainIntensity = 3;
+            if (!floodBeforeWritten)
+            {
+                agentManager.GetComponent<AgentsCountersTxtboxesUpdater>().WriteLogBeforeFlood();
+                floodBeforeWritten = true;
+            }
         }
 
         if ((Time.time >= nextFlood - 15))
@@ -89,6 +97,17 @@ public class FloodingManager : MonoBehaviour
             {
                 nextFlood = Mathf.FloorToInt(Time.time) + FLOOD_TIMER;
             }
+
+
+            if ((Time.time + 30 >= (nextFlood - FLOOD_TIMER)))
+            {
+                if (!floodAfterWritten)
+                {
+                    agentManager.GetComponent<AgentsCountersTxtboxesUpdater>().WriteLogAfterFlood();
+                    floodAfterWritten = true;
+                }
+            }
+
 
             rain.RainIntensity = 0;
         }

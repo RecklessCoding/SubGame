@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class WindowManager : MonoBehaviour
 {
-
     public GameObject scoreBoard;
 
     public GameObject agentsManager;
+
+    private bool gameStarted = false;
 
     // Use this for initialization
     void Start()
@@ -18,9 +18,12 @@ public class WindowManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            agentsManager.GetComponent<AgentsCountersTxtboxesUpdater>().UpdateScoreManager();
-
-            scoreBoard.SetActive(!scoreBoard.activeSelf);
+            if (Time.timeScale > 0)
+            {
+                gameStarted = true;
+            }
+            if (gameStarted)
+                scoreBoard.SetActive(!scoreBoard.activeSelf);
         }
     }
 }

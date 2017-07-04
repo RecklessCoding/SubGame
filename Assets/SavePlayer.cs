@@ -17,7 +17,7 @@ public class SavePlayer : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        (playerNameTxtbox.GetComponent("InputField") as InputField).text = PlayerPrefs.GetString("DisplayName");
     }
 
     // Update is called once per frame
@@ -29,9 +29,25 @@ public class SavePlayer : MonoBehaviour
         }
     }
 
+    void OnApplicationQuit()
+    {
+        PlayerPrefs.Save();
+    }
+
+
     public void OnSaveNameBtnPress()
     {
-        PlayerPrefs.SetString("UserName", ((playerNameTxtbox.GetComponent("InputField") as InputField).text));
+        int total = 0;
+        total = PlayerPrefs.GetInt("saved_total"); //set the total variable to the previously saved value 
+        PlayerPrefs.SetString("UserName"+total, ((playerNameTxtbox.GetComponent("InputField") as InputField).text));
+
+        PlayerPrefs.SetString("DisplayName", ((playerNameTxtbox.GetComponent("InputField") as InputField).text)); //set the new total value
+        PlayerPrefs.SetString("UserName", ((playerNameTxtbox.GetComponent("InputField") as InputField).text) + total); //set the new total value
+
+        total += 1;
+        PlayerPrefs.SetInt("saved_total", total); //set the new total value
+        PlayerPrefs.Save();
+
         playerNameTxtbox.transform.parent.gameObject.SetActive(false);
 
         Time.timeScale = 1;
@@ -48,6 +64,8 @@ public class SavePlayer : MonoBehaviour
         {
             floodManager.GetComponent<FloodingManager>().enabled = true;
         }
+
+        LogfileWriter.GetInstance().Createfile();
     }
 
     public void OnFloodToggleChange(bool value)

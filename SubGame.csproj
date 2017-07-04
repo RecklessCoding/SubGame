@@ -121,6 +121,7 @@
     <Compile Include="Assets\Scripts\Houses\HouseScript.cs" />
     <Compile Include="Assets\Scripts\Houses\HousesScript.cs" />
     <Compile Include="Assets\Scripts\KeyboardMovement.cs" />
+    <Compile Include="Assets\Scripts\LogfileWriter.cs" />
     <Compile Include="Assets\Scripts\PredatorsManager.cs" />
     <Compile Include="Assets\Scripts\SpriteOutline.cs" />
     <Compile Include="Assets\Scripts\SpriteScript.cs" />
