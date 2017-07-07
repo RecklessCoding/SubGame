@@ -8,7 +8,7 @@ public class AgentActionsSelector : MonoBehaviour
 
     private int dateBorn = 0;
 
-    public int maxLife = 0;
+    public float maxLife = 0;
 
     private GameObject agentsManager;
 
@@ -207,7 +207,7 @@ public class AgentActionsSelector : MonoBehaviour
             ABOD3_Bridge.GetInstance().AletForElement(botNumber, "DE-IsNight", "DE");
             ABOD3_Bridge.GetInstance().AletForElement(botNumber, "RunHome", "A");
 
-            CHomeBuilding();
+            agentBehaviours.GoToHome();
         }
         else if (agentBehaviours.IsStarving())
         {
@@ -245,7 +245,7 @@ public class AgentActionsSelector : MonoBehaviour
     {
         if (agentBehaviours.HasHomeNotBuilt())
         {
-            CHomeBuilding();
+            agentBehaviours.GoToHome();
         }
         else
         {
@@ -535,7 +535,7 @@ public class AgentActionsSelector : MonoBehaviour
     {
         int timeInDay = Mathf.FloorToInt(timeDistribution.TimeInDay);
 
-        maxLife = Random.Range(timeInDay * 1, timeInDay * 45);
+        maxLife = Random.Range(timeInDay * 3, timeInDay * 45) + Time.time;
     }
 
     private void FindHouse()

@@ -8,11 +8,26 @@ public class AgentsManager : MonoBehaviour
 
     private GameObject agent;
 
+    private bool isImmigrationOn = false;
+
+    void Start()
+    {
+        if (PlayerPrefs.GetInt("Immigration") == 1)
+        {
+            isImmigrationOn = true;
+        }
+        else
+        {
+            isImmigrationOn = false;
+        }
+
+    }
+
     void Update()
     {
         agentsCount = gameObject.transform.childCount;
 
-        if (agentsCount == 0)
+        if (agentsCount == 0 && !isImmigrationOn)
         {            // game over!
 
             (transform.GetComponent("AgentsCountersTxtboxesUpdater") as AgentsCountersTxtboxesUpdater).EndGame();

@@ -220,8 +220,6 @@ public class TimeDistribution : MonoBehaviour
 
             if (daysUntilNextMigrant >= 10)
             {
-                Debug.Log("immigration?");
-
                 if (isImmigrationOn)
                 {
                     Debug.Log("immigration");

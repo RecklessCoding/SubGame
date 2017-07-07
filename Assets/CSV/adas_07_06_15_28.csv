@@ -1,0 +1,15 @@
+DaysPassed,TotalPopulation,TotalBabies,DeathsAge,DeathsPredator,DeathsStarved,TotalDeaths,FoodTime,BridgesTime,HousesTime,ProcreationTime,AverageFoodTime,AverageBridgesTime,AverageHouseTime,AverageProcreationTime
+1,150,0,0,24,0,24,80,0,120,0,40,0,60,0
+2,150,0,6,29,0,35,80,0,120,0,40,0,60,0
+3,150,0,7,32,0,39,80,0,120,0,40,0,60,0
+4,150,0,11,32,0,43,80,0,120,0,40,0,60,0
+5,150,0,12,33,0,45,80,0,120,0,40,0,60,0
+5,BeforeFlood,-,-,-,-,-,-,-,-,-,-,-,-,-
+5,150,0,12,33,0,45,80,0,120,0,40,0,60,0
+5,BeforeFlood,-,-,-,-,-,-,-,-,-,-,-,-,-
+5,AfterFlood,-,-,-,-,-,-,-,-,-,-,-,-,-
+5,150,0,14,33,0,47,80,0,120,0,40,0,60,0
+5,AfterFlood,-,-,-,-,-,-,-,-,-,-,-,-,-
+6,150,0,18,33,0,51,80,0,120,0,40,0,60,0
+7,150,0,22,41,0,63,80,0,120,0,40,0,60,0
+8,150,0,24,43,0,67,80,0,120,0,40,0,60,0

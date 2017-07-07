@@ -16,7 +16,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
 
     private AgentNavigator agentNavigator;
 
-    public int PROCREATE_CHANCE = 10;
+    public int PROCREATE_CHANCE = 5;
 
     public bool isHome;
 
@@ -174,7 +174,7 @@ public class AgentBehaviourLibrary : MonoBehaviour
             ABOD3_Bridge.GetInstance().AletForElement(botNumber, "CE-HasEnoughEnergy", "CE");
             ABOD3_Bridge.GetInstance().AletForElement(botNumber, "AttemptProcreation", "A");
 
-            int dieRoll = UnityEngine.Random.Range(1, 100);
+            int dieRoll = UnityEngine.Random.Range(0, 100);
             staminaLevel--;
             if (dieRoll < PROCREATE_CHANCE)
             {
