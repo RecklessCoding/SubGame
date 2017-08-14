@@ -39,7 +39,7 @@ public class AgentActionsSelector : MonoBehaviour
         dateBorn = timeDistribution.DaysPassed;
 
         nextStaminaUpdate = timeDistribution.TimeInDay;
-        staminaUpdateTime = timeDistribution.TimeInDay / 1.5f;
+        staminaUpdateTime = timeDistribution.TimeInDay / 1.75f;
 
         SetRandomAge();
         defaultColor = new Color(0, 1, 1, 1);
